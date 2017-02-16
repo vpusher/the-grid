@@ -1,0 +1,119 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`<debug-grid>` is a helper component displaying grid axis for debug purpose.
+
+Example:
+
+    <debug-grid cell-height="70" cell-width="70" cell-margin="10" col-count="20" row-count="20"></debug-grid>
+-->
+
+<dom-module id="debug-grid">
+    <template>
+        <style>
+            :host {
+                position: absolute;
+            }
+
+            #container {
+                position: relative;
+            }
+
+            .axis {
+                position: absolute;
+                background-color: #d6d6d6;
+            }
+        </style>
+
+        <div id="container">
+            <dom-repeat items="[[verticalAxes]]">
+                <template>
+                    <div class="axis" style$="[[_computeStyle('vertical', index, cellWidth, cellHeight, cellMargin, rowCount, colCount)]]"></div>
+                </template>
+            </dom-repeat>
+            <dom-repeat items="[[horizontalAxes]]">
+                <template>
+                    <div class="axis" style$="[[_computeStyle('horizontal', index, cellWidth, cellHeight, cellMargin, rowCount, colCount)]]"></div>
+                </template>
+            </dom-repeat>
+        </div>
+
+    </template>
+
+    <script>
+        class DebugGrid extends Polymer.Element {
+
+            static get is() { return 'debug-grid'; }
+
+            static get config() {
+                return {
+                    properties: {
+                        cellHeight: {
+                            type: Number,
+                            value: 150,
+                            reflectToAttribute: true
+                        },
+                        cellWidth: {
+                            type: Number,
+                            value: 150,
+                            reflectToAttribute: true
+                        },
+                        cellMargin: {
+                            type: Number,
+                            value: 10,
+                            reflectToAttribute: true
+                        },
+                        rowCount: {
+                            type: Number,
+                            value: 10,
+                            reflectToAttribute: true,
+                            observer: 'rowCountChanged'
+                        },
+                        colCount: {
+                            type: Number,
+                            value: 10,
+                            reflectToAttribute: true,
+                            observer: 'colCountChanged'
+                        },
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+            }
+
+            _computeStyle(direction, index, width, height, margin, rowCount, colCount) {
+                let positionValue,
+                    positionProp = direction === 'vertical' ? 'left' : 'top',
+                    size = direction === 'vertical' ? width : height,
+                    heightValue = direction === 'vertical' ? height * rowCount + (rowCount - 1) * margin : 1,
+                    widthValue = direction === 'vertical' ? 1 : width * colCount + (colCount - 1) * margin;
+
+                // First axis
+                if (index === 0) {
+                    positionValue = 0;
+                // Last axis
+                } else if (index === this[`${direction}Axes`].length - 1) {
+                    positionValue = index * size + (index - 1) * margin;
+                } else {
+                    positionValue = index * size + (index - 1) * margin + margin / 2;
+                }
+
+                return `${positionProp}:${positionValue}px;width:${widthValue}px;height:${heightValue}px`;
+            }
+
+            rowCountChanged (count) {
+                this.horizontalAxes = Array.from({length: count + 1});
+            }
+
+            colCountChanged (count) {
+                this.verticalAxes = Array.from({length: count + 1});
+            }
+
+        }
+
+        customElements.define(DebugGrid.is, DebugGrid);
+
+    </script>
+</dom-module>

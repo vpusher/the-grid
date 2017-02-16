@@ -1,0 +1,85 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`<basic-grid>` is a basic grid layout.
+
+Example:
+
+    <basic-grid></basic-grid>
+
+-->
+
+<dom-module id="basic-grid">
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+            }
+
+            #container ::slotted(*) {
+                background: blue;
+                color: white;
+                display: inline-block;
+                text-align: center;
+                font-size: 50px;
+                line-height: var(--grid-cell-height, 150px);
+                width: var(--grid-cell-width, 150px);
+                height: var(--grid-cell-height, 150px);
+                margin: var(--grid-cell-margin, 5px);
+            }
+        </style>
+
+        <div id="container">
+            <slot></slot>
+        </div>
+
+    </template>
+
+    <script>
+        class BasicGrid extends Polymer.Element {
+
+            static get is() { return 'basic-grid'; }
+
+            static get config() {
+                return {
+                    properties: {
+                        cellHeight: {
+                            type: String,
+                            value: '150px',
+                            observer: 'computeSize',
+                            reflectToAttribute: true
+                        },
+                        cellWidth: {
+                            type: String,
+                            value: '150px',
+                            observer: 'computeSize',
+                            reflectToAttribute: true
+                        },
+                        cellMargin: {
+                            type: String,
+                            value: '10px',
+                            observer: 'computeSize',
+                            reflectToAttribute: true
+                        }
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+            }
+
+            computeSize () {
+                this.updateStyles({
+                    '--grid-cell-width': this.cellWidth,
+                    '--grid-cell-height': this.cellHeight,
+                    '--grid-cell-margin': this.cellMargin
+                });
+            }
+
+        }
+
+        customElements.define(BasicGrid.is, BasicGrid);
+
+    </script>
+</dom-module>

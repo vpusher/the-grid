@@ -1,0 +1,297 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`<draggable-grid>` is a grid layout.
+
+Example:
+
+    <draggable-grid cell-height="150" cell-width="150" cell-margin="10"></draggable-grid>
+
+@demo demo/index.html
+-->
+
+<dom-module id="draggable-grid">
+    <template>
+        <style>
+            :host {
+                display: block;
+                --grid-cell-height: 150px;
+                --grid-cell-width: 150px;
+                --grid-cell-margin: 10px;
+            }
+
+            #container {
+                position: relative;
+            }
+
+            #container > ::slotted(*) {
+                display: block;
+                position: absolute;
+                width: var(--grid-cell-width);
+                height: var(--grid-cell-height);
+                transition: top 0.5s ease, left 0.5s ease;
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+            }
+
+            #container > ::slotted([placeholder]) {
+                display: none;
+                transition: none;
+            }
+        </style>
+
+        <div id="container">
+            <slot></slot>
+        </div>
+
+    </template>
+
+    <script>
+            class DraggableGrid extends Polymer.GestureEventListeners(Polymer.Element) {
+
+            static get is() { return 'draggable-grid'; }
+
+            static get config() {
+                return {
+                    properties: {
+                        cellHeight: {
+                            type: Number,
+                            value: 150,
+                            reflectToAttribute: true,
+                            observer: 'computeStyles'
+                        },
+                        cellWidth: {
+                            type: Number,
+                            value: 150,
+                            reflectToAttribute: true,
+                            observer: 'computeStyles'
+                        },
+                        cellMargin: {
+                            type: Number,
+                            value: 10,
+                            reflectToAttribute: true,
+                            observer: 'computeStyles'
+                        },
+                        colCount: {
+                            type: Number,
+                            value: 10,
+                            reflectToAttribute: true
+                        },
+                        rowCount: {
+                            type: Number,
+                            value: 10,
+                            reflectToAttribute: true
+                        }
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+            }
+
+            connectedCallback () {
+                super.connectedCallback();
+                this.computeStyles();
+
+                var moveHandler = this._handleMove.bind(this);
+                var resizeHandler = this._handleResize.bind(this);
+
+                Array.prototype.forEach.call(this.children, child => {
+                    let isPlaceholder = child.hasAttribute('placeholder');
+                    if (isPlaceholder) {
+                        this.placeholder = child;
+                    } else {
+                        var resizers = child.querySelectorAll('[resize]') || [];
+
+                        Array.prototype.forEach.call(resizers, resizer => {
+                            this._addEventListenerToNode(resizer, 'track', resizeHandler);
+                        });
+
+                        this._addEventListenerToNode(child, 'track', moveHandler);
+                    }
+                });
+            }
+
+            computeStyles() {
+
+                var sheet = (this.root && this.root.styleSheets && this.root.styleSheets[0]),
+                    cssVars = {
+                        '--grid-cell-width': `${this.cellWidth}px`,
+                        '--grid-cell-height': `${this.cellHeight}px`,
+                        '--grid-cell-margin': `${this.cellMargin}px`
+                    },
+                    margin = this.cellMargin,
+                    height = this.cellHeight,
+                    width = this.cellWidth;
+
+                if (!sheet) return;
+
+                for(let i = 0; i < this.colCount; i++) {
+
+                    cssVars[`--grid-col-${i}`] = `${i * width  + i * margin}px`;
+                    cssVars[`--grid-width-${i + 1}x`] = `${(i + 1) * width  + i * margin}px`;
+
+                    sheet.insertRule(`#container > ::slotted([col="${i}"])         { left: var(--grid-col-${i}); }`,              sheet.cssRules.length);
+                    sheet.insertRule(`#container > ::slotted([width="${i + 1}"])   { width: var(--grid-width-${(i + 1)}x); }`,    sheet.cssRules.length);
+                }
+
+                for(let i = 0; i < this.rowCount; i++) {
+                    cssVars[`--grid-row-${i}`] = `${i * height  + i * margin}px`;
+                    cssVars[`--grid-height-${i + 1}x`] = `${(i + 1) * height  + i * margin}px`;
+
+                    sheet.insertRule(`#container > ::slotted([row="${i}"])         { top:  var(--grid-row-${i}); }`,              sheet.cssRules.length);
+                    sheet.insertRule(`#container > ::slotted([height="${i + 1}"])  { height:  var(--grid-height-${(i + 1)}x); }`, sheet.cssRules.length);
+                }
+
+                this.updateStyles(cssVars);
+            }
+
+            _handleMove(e) {
+                var player = e.target,
+                    state = e.detail.state;
+
+                if (Polymer.dom(player).parentNode !== this) return;
+
+                if (state == 'start') {
+                    let styles = window.getComputedStyle(player);
+                    player.style.left = styles.getPropertyValue('left');
+                    player.style.top = styles.getPropertyValue('top');
+                    player.style.transition = 'none';
+                    player.style.zIndex = 1;
+                    this.placeholder.setAttribute('width', player.getAttribute('width'));
+                    this.placeholder.setAttribute('height', player.getAttribute('height'));
+                    this.placeholder.setAttribute('row', player.getAttribute('row'));
+                    this.placeholder.setAttribute('col', player.getAttribute('col'));
+                    this.placeholder.style.display = 'block';
+                }
+
+                if (state == 'track') {
+                    let left = parseInt(player.style.left.split('px')[0]);
+                    let top = parseInt(player.style.top.split('px')[0]);
+                    let newLeft = left + e.detail.ddx;
+                    let newTop = top + e.detail.ddy;
+                    let position = this.getClosestPosition(newLeft, newTop);
+                    player.style.left = `${newLeft}px`;
+                    player.style.top = `${newTop}px`;
+                    this.placeholder.setAttribute('row', position.row);
+                    this.placeholder.setAttribute('col', position.col);
+                }
+
+                if (state == 'end') {
+                    player.setAttribute('row', this.placeholder.getAttribute('row'));
+                    player.setAttribute('col', this.placeholder.getAttribute('col'))
+                    player.style.left = '';
+                    player.style.top = '';
+                    player.style.transition = '';
+                    player.style.zIndex = '';
+                    this.placeholder.style.display = '';
+                }
+
+                e.stopPropagation();
+
+            }
+
+            _handleResize(e) {
+                var player = this.getResizerTile(e.target),
+                    state = e.detail.state;
+
+                var resizeType = e.target.getAttribute('resize'),
+                    isTop = ['top', 'top-right', 'top-left'].includes(resizeType),
+                    isLeft = ['left', 'top-left', 'bottom-left'].includes(resizeType),
+                    isWidth = ['left', 'right', 'bottom-right', 'bottom-left', 'top-right', 'top-left'].includes(resizeType),
+                    isHeight = ['top', 'bottom', 'top-right', 'bottom-right',  'bottom-left', 'top-left'].includes(resizeType);
+
+                if (state == 'start') {
+                    let styles = window.getComputedStyle(player);
+                    player.style.left = styles.getPropertyValue('left');
+                    player.style.top = styles.getPropertyValue('top');
+                    player.style.width = styles.getPropertyValue('width');
+                    player.style.height = styles.getPropertyValue('height');
+                    player.style.transition = 'none';
+                    player.style.zIndex = 1;
+                    this.placeholder.setAttribute('width', player.getAttribute('width'));
+                    this.placeholder.setAttribute('height', player.getAttribute('height'));
+                    this.placeholder.setAttribute('row', player.getAttribute('row'));
+                    this.placeholder.setAttribute('col', player.getAttribute('col'));
+                    this.placeholder.style.display = 'block';
+                }
+
+                if (state == 'track') {
+                    let left = parseInt(player.style.left.split('px')[0]);
+                    let top = parseInt(player.style.top.split('px')[0]);
+                    let width = parseInt(player.style.width.split('px')[0]);
+                    let height = parseInt(player.style.height.split('px')[0]);
+                    let newLeft = left + e.detail.ddx;
+                    let newTop = top + e.detail.ddy;
+                    let newWidth = width + (isLeft ? -e.detail.ddx: e.detail.ddx);
+                    let newHeight = height + (isTop ? -e.detail.ddy : e.detail.ddy);
+                    let position = this.getClosestPosition(newLeft, newTop);
+                    let size = this.getClosestSize(newWidth, newHeight);
+                    isLeft && (player.style.left = `${newLeft}px`);
+                    isTop && (player.style.top = `${newTop}px`);
+                    isWidth && (player.style.width = `${newWidth}px`);
+                    isHeight && (player.style.height = `${newHeight}px`);
+                    isTop && this.placeholder.setAttribute('row', position.row);
+                    isLeft && this.placeholder.setAttribute('col', position.col);
+                    isHeight && this.placeholder.setAttribute('height', size.height);
+                    isWidth && this.placeholder.setAttribute('width', size.width);
+                }
+
+                if (state == 'end') {
+                    player.setAttribute('row', this.placeholder.getAttribute('row'));
+                    player.setAttribute('col', this.placeholder.getAttribute('col'));
+                    player.setAttribute('width', this.placeholder.getAttribute('width'));
+                    player.setAttribute('height', this.placeholder.getAttribute('height'));
+                    player.style.transition = 'top 0.5s ease, left 0.5s ease, width 0.5s ease, height 0.5s ease';
+                    player.style.left = '';
+                    player.style.top = '';
+                    player.style.width = '';
+                    player.style.height = '';
+                    player.style.zIndex = '';
+                    setTimeout(() => {
+                        player.style.transition = '';
+                    }, 500);
+
+                    this.placeholder.style.display = '';
+                }
+
+                e.stopPropagation();
+
+            }
+
+            getClosestPosition(x, y) {
+                return {
+                    col : Math.round((x + this.cellMargin / 2) / (this.cellWidth + this.cellMargin)),
+                    row : Math.round((y + this.cellMargin / 2) / (this.cellHeight + this.cellMargin))
+                };
+            }
+
+            getClosestSize(width, height) {
+                return {
+                    height: Math.round((height + this.cellMargin / 2) / (this.cellHeight + this.cellMargin)),
+                    width:  Math.round((width + this.cellMargin / 2) / (this.cellWidth + this.cellMargin))
+                };
+            }
+
+            getResizerTile(resizer) {
+                var current = resizer;
+
+                while (current.parentElement !== this) {
+                    current = current.parentElement;
+                }
+
+                return current !== this && current !== resizer ? current : undefined;
+            }
+
+        }
+
+        customElements.define(DraggableGrid.is, DraggableGrid);
+
+    </script>
+</dom-module>
