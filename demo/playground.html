@@ -19,14 +19,13 @@
 
         draggable-grid .tile {
             background: #ff4d43;
-            border: 1px solid #f97a7a;
             color: white;
             cursor: move;
+            overflow: hidden;
         }
 
         draggable-grid [placeholder] {
             background: #afafaf;
-            border: 1px solid #a7a7a7;
         }
 
         draggable-grid .tile > span {
@@ -40,7 +39,6 @@
             margin-top: -25px;
             font-size: 50px;
         }
-
 
         draggable-grid [resize="bottom-right"] {
             bottom: 0;
@@ -70,12 +68,13 @@
             top: 50%;
             left: 0;
             cursor: ew-resize;
+            margin-top: -10px;
         }
 
         draggable-grid [resize="top"] {
             top: 0%;
-            left: 50%;
-            transform: rotateZ(90deg);
+            width: 100%;
+            text-align: center;
             cursor: ns-resize;
         }
 
@@ -83,64 +82,65 @@
             top: 50%;
             right: 0;
             cursor: ew-resize;
+            margin-top: -10px;
         }
 
         draggable-grid [resize="bottom"] {
             bottom: 0;
-            left: 50%;
+            width: 100%;
+            text-align: center;
             cursor: ns-resize;
-            transform: rotateZ(90deg);
         }
     </style>
 
 </head>
 <body>
 
-<debug-grid cell-height="45" cell-width="45" cell-margin="10" col-count="20" row-count="20"></debug-grid>
+<debug-grid cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10"></debug-grid>
 
-<draggable-grid cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10">
+<draggable-grid cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10" animated>
     <div class="tile" col="0" row="0" height="1" width="1" >
         <span>0</span>
-        <span resize="left">|</span>
+        <span resize="left">│</span>
     </div>
     <div class="tile" col="2" row="0" height="1" width="1" >
         <span>1</span>
-        <span resize="right">|</span>
+        <span resize="right">│</span>
     </div>
     <div class="tile" col="2" row="2" height="1" width="1" >
         <span>2</span>
-        <span resize="top">|</span>
+        <span resize="top">─</span>
     </div>
     <div class="tile" col="3" row="2" height="1" width="1" >
         <span>3</span>
-        <span resize="bottom">|</span>
+        <span resize="bottom">─</span>
     </div>
     <div class="tile" col="5" row="1" height="2" width="2" >
         <span>3</span>
-        <span resize="top-right">X</span>
+        <span resize="top-right">┐</span>
     </div>
     <div class="tile" col="0" row="1" height="2" width="2" >
         <span>5</span>
-        <span resize="top-left">X</span>
+        <span resize="top-left">┌</span>
     </div>
     <div class="tile" col="0" row="3" height="1" width="1" >
         <span>6</span>
-        <span resize="bottom-left">X</span>
+        <span resize="bottom-left">└</span>
     </div>
     <div class="tile" col="0" row="5" height="2" width="2" >
         <span>7</span>
-        <span resize="bottom-right">X</span>
+        <span resize="bottom-right">┘</span>
     </div>
     <div class="tile" col="5" row="4" height="1" width="1" >
         <span>8</span>
-        <span resize="left">|</span>
-        <span resize="right">|</span>
-        <span resize="top">|</span>
-        <span resize="bottom">|</span>
-        <span resize="top-right">X</span>
-        <span resize="top-left">X</span>
-        <span resize="bottom-right">X</span>
-        <span resize="bottom-left">X</span>
+        <span resize="left">│</span>
+        <span resize="right">│</span>
+        <span resize="top">─</span>
+        <span resize="bottom">─</span>
+        <span resize="top-right">┐</span>
+        <span resize="top-left">┌</span>
+        <span resize="bottom-right">┘</span>
+        <span resize="bottom-left">└</span>
     </div>
     <div placeholder></div>
 </draggable-grid>
