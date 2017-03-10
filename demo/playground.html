@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
     <title>draggable-grid demo</title>
+    <script>window.ShadyDOM = { force: true };</script>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
@@ -98,7 +99,7 @@
 
 <debug-grid cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10"></debug-grid>
 
-<draggable-grid cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10" animated>
+<draggable-grid id="grid" cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10" animated>
     <div class="tile" col="0" row="0" height="1" width="1" >
         <span>0</span>
         <span resize="left">│</span>
@@ -144,6 +145,7 @@
     </div>
     <div placeholder></div>
 </draggable-grid>
+
 
 </body>
 </html>
