@@ -14,9 +14,11 @@ Example:
     <template>
         <style>
             :host {
-                display: block;
-                --grid-cell-height: 150px;
-                --grid-cell-width: 150px;
+                display: inline-block;
+                --grid-width: 1090px;  /* cellWidth * colCount + cellMargin * (colCount - 1) */
+                --grid-height: 1090px; /* cellHeight * rowCount + cellMargin * (rowCount - 1) */
+                --grid-cell-height: 100px;
+                --grid-cell-width: 100px;
                 --grid-cell-margin: 10px;
                 --grid-move-animation-transition: 'none';
                 --grid-resize-animation-transition: 'none';
@@ -24,6 +26,8 @@ Example:
 
             #container {
                 position: relative;
+                width: var(--grid-width);
+                height: var(--grid-height);
             }
 
             #container > ::slotted(*) {
@@ -58,45 +62,43 @@ Example:
 
             static get is() { return 'draggable-grid'; }
 
-            static get config() {
+            static get properties() {
                 return {
-                    properties: {
-                        cellHeight: {
-                            type: Number,
-                            value: 150,
-                            reflectToAttribute: true,
-                            observer: 'computeStyles'
-                        },
-                        cellWidth: {
-                            type: Number,
-                            value: 150,
-                            reflectToAttribute: true,
-                            observer: 'computeStyles'
-                        },
-                        cellMargin: {
-                            type: Number,
-                            value: 10,
-                            reflectToAttribute: true,
-                            observer: 'computeStyles'
-                        },
-                        colCount: {
-                            type: Number,
-                            value: 10,
-                            reflectToAttribute: true,
-                            observer: 'computeStyles'
-                        },
-                        rowCount: {
-                            type: Number,
-                            value: 10,
-                            reflectToAttribute: true,
-                            observer: 'computeStyles'
-                        },
-                        animated: {
-                            type: Boolean,
-                            value: false,
-                            reflectToAttribute: true,
-                            observer: 'computeStyles'
-                        }
+                    cellHeight: {
+                        type: Number,
+                        value: 100,
+                        reflectToAttribute: true,
+                        observer: 'computeStyles'
+                    },
+                    cellWidth: {
+                        type: Number,
+                        value: 100,
+                        reflectToAttribute: true,
+                        observer: 'computeStyles'
+                    },
+                    cellMargin: {
+                        type: Number,
+                        value: 10,
+                        reflectToAttribute: true,
+                        observer: 'computeStyles'
+                    },
+                    colCount: {
+                        type: Number,
+                        value: 10,
+                        reflectToAttribute: true,
+                        observer: 'computeStyles'
+                    },
+                    rowCount: {
+                        type: Number,
+                        value: 10,
+                        reflectToAttribute: true,
+                        observer: 'computeStyles'
+                    },
+                    animated: {
+                        type: Boolean,
+                        value: false,
+                        reflectToAttribute: true,
+                        observer: 'computeStyles'
                     }
                 }
             }
@@ -128,46 +130,11 @@ Example:
                 });
             }
 
-/*
             computeStyles() {
-
-                var sheet = (this.root && this.root.styleSheets && this.root.styleSheets[0]),
-                    cssVars = {
-                        '--grid-cell-width': `${this.cellWidth}px`,
-                        '--grid-cell-height': `${this.cellHeight}px`,
-                        '--grid-cell-margin': `${this.cellMargin}px`,
-                        '--grid-move-animation-transition': this.animated ? 'top 0.5s ease, left 0.5s ease' : 'none',
-                        '--grid-resize-animation-transition': this.animated ? 'top 0.5s ease, left 0.5s ease, width 0.5s ease, height 0.5s ease' : 'none'
-                    },
-                    margin = this.cellMargin,
-                    height = this.cellHeight,
-                    width = this.cellWidth;
-
-                if (!sheet) return;
-
-                for(let i = 0; i < this.colCount; i++) {
-
-                    cssVars[`--grid-col-${i}`] = `${i * width  + i * margin}px`;
-                    cssVars[`--grid-width-${i + 1}x`] = `${(i + 1) * width  + i * margin}px`;
-
-                    sheet.insertRule(`#container > ::slotted([col="${i}"])         { left: var(--grid-col-${i}); }`,              sheet.cssRules.length);
-                    sheet.insertRule(`#container > ::slotted([width="${i + 1}"])   { width: var(--grid-width-${(i + 1)}x); }`,    sheet.cssRules.length);
-                }
-
-                for(let i = 0; i < this.rowCount; i++) {
-                    cssVars[`--grid-row-${i}`] = `${i * height  + i * margin}px`;
-                    cssVars[`--grid-height-${i + 1}x`] = `${(i + 1) * height  + i * margin}px`;
-
-                    sheet.insertRule(`#container > ::slotted([row="${i}"])         { top:  var(--grid-row-${i}); }`,              sheet.cssRules.length);
-                    sheet.insertRule(`#container > ::slotted([height="${i + 1}"])  { height:  var(--grid-height-${(i + 1)}x); }`, sheet.cssRules.length);
-                }
-
-                this.updateStyles(cssVars);
-            }
-*/
-            computeStyles() {
-                const customStyle = document.head.querySelector('custom-style') || document.createElement('custom-style');
+                const customStyle = document.head.querySelector('custom-style#' + this.id) || document.createElement('custom-style');
                 const style = customStyle && customStyle.querySelector('style') || document.createElement('style');
+
+                customStyle.id = this.id;
 
                 let styleRules = '';
                 let styleVars = `
@@ -181,9 +148,11 @@ Example:
                 let margin = this.cellMargin,
                     height = this.cellHeight,
                     width = this.cellWidth,
+                    cols = this.colCount,
+                    rows = this.rowCount,
                     selfSelector = `draggable-grid${this.id ? '#' + this.id : ''}`;
 
-                for(let i = 0; i < this.colCount; i++) {
+                for(let i = 0; i < cols; i++) {
 
                     styleVars += `
                         --grid-col-${i}: ${i * width  + i * margin}px;
@@ -196,7 +165,7 @@ Example:
                     `;
                 }
 
-                for(let i = 0; i < this.rowCount; i++) {
+                for(let i = 0; i < rows; i++) {
                     styleVars += `
                         --grid-row-${i}: ${i * height  + i * margin}px;
                         --grid-height-${i + 1}x: ${(i + 1) * height  + i * margin}px;
@@ -209,14 +178,21 @@ Example:
                 }
 
                 style.textContent = `
-                    draggable-grid {
+                    draggable-grid#${this.id} {
                         ${styleVars}
                     }
                     ${styleRules}
                 `;
 
+                // Light Dom customization using external stylesheet.
                 customStyle.appendChild(style);
                 document.head.appendChild(customStyle);
+
+                // Local DOM (Shadow or Shady) customization using inner stylesheet.
+                this.updateStyles({
+                    '--grid-width': `${width * cols + margin * (cols - 1)}px`,
+                    '--grid-height': `${height * rows + margin * (rows - 1)}px`
+                });
 
             }
 

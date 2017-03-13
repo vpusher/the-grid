@@ -97,37 +97,35 @@ Example:
 
             static get is() { return 'debug-grid'; }
 
-            static get config() {
+            static get properties() {
                 return {
-                    properties: {
-                        cellHeight: {
-                            type: Number,
-                            value: 150,
-                            reflectToAttribute: true
-                        },
-                        cellWidth: {
-                            type: Number,
-                            value: 150,
-                            reflectToAttribute: true
-                        },
-                        cellMargin: {
-                            type: Number,
-                            value: 10,
-                            reflectToAttribute: true,
-                            observer: 'offsetChanged'
-                        },
-                        rowCount: {
-                            type: Number,
-                            value: 10,
-                            reflectToAttribute: true,
-                            observer: 'rowCountChanged'
-                        },
-                        colCount: {
-                            type: Number,
-                            value: 10,
-                            reflectToAttribute: true,
-                            observer: 'colCountChanged'
-                        },
+                    cellHeight: {
+                        type: Number,
+                        value: 150,
+                        reflectToAttribute: true
+                    },
+                    cellWidth: {
+                        type: Number,
+                        value: 150,
+                        reflectToAttribute: true
+                    },
+                    cellMargin: {
+                        type: Number,
+                        value: 10,
+                        reflectToAttribute: true,
+                        observer: 'offsetChanged'
+                    },
+                    rowCount: {
+                        type: Number,
+                        value: 10,
+                        reflectToAttribute: true,
+                        observer: 'rowCountChanged'
+                    },
+                    colCount: {
+                        type: Number,
+                        value: 10,
+                        reflectToAttribute: true,
+                        observer: 'colCountChanged'
                     }
                 }
             }
