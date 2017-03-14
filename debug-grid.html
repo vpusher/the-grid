@@ -102,18 +102,20 @@ Example:
                     cellHeight: {
                         type: Number,
                         value: 150,
-                        reflectToAttribute: true
+                        reflectToAttribute: true,
+                        observer: 'computeOffsets'
                     },
                     cellWidth: {
                         type: Number,
                         value: 150,
-                        reflectToAttribute: true
+                        reflectToAttribute: true,
+                        observer: 'computeOffsets'
                     },
                     cellMargin: {
                         type: Number,
                         value: 10,
                         reflectToAttribute: true,
-                        observer: 'offsetChanged'
+                        observer: 'computeOffsets'
                     },
                     rowCount: {
                         type: Number,
@@ -135,15 +137,26 @@ Example:
             }
 
             _computeAxisStyle(direction, index, offset, width, height, margin, rowCount, colCount) {
-                let positionValue,
-                    positionProp = direction === 'vertical' ? 'left' : 'top',
-                    size = direction === 'vertical' ? width : height,
-                    heightValue = direction === 'vertical' ? height * rowCount + (rowCount - 1) * margin : 1,
-                    widthValue = direction === 'vertical' ? 1 : width * colCount + (colCount - 1) * margin,
-                    lastIndex = direction === 'vertical' ? colCount : rowCount;
+                let positionValue, positionProp,
+                    size, heightValue, widthValue,
+                    lastIndex;
 
-                // First axis
-                if (index === 0) {
+                if (direction === 'vertical') {
+                    positionProp = 'left';
+                    size = width;
+                    heightValue = height * rowCount + (rowCount - 1) * margin;
+                    widthValue = 1;
+                    lastIndex = colCount;
+                } else {
+                    positionProp = 'top';
+                    size = height;
+                    heightValue = 1;
+                    widthValue = width * colCount + (colCount - 1) * margin;
+                    lastIndex = rowCount;
+                }
+
+                // First axis (but center axis)
+                if (index === 0 && this.horizontalCenterOffset !== offset && this.verticalCenterOffset !== offset) {
                     positionValue = 0;
                 // Last axis
                 } else if (index === lastIndex) {
@@ -156,10 +169,15 @@ Example:
             }
 
             _computeLegendStyle(direction, index, width, height, margin, rowCount, colCount) {
+                let leftValue, topValue;
 
-                let leftValue = direction === 'vertical' ? (index * width + (index - 1) * margin): (colCount * width + (colCount - 1) * margin),
-                    topValue = direction === 'vertical' ? (rowCount * height + (rowCount - 1) * margin) : (index * height + (index - 1) * margin);
-
+                if (direction === 'vertical') {
+                    leftValue = index * width + (index - 1) * margin;
+                    topValue = rowCount * height + (rowCount - 1) * margin;
+                } else {
+                    leftValue = colCount * width + (colCount - 1) * margin;
+                    topValue = index * height + (index - 1) * margin;
+                }
 
                 return `top:${topValue}px; left:${leftValue}px;`;
             }
@@ -168,19 +186,18 @@ Example:
                 return index * size + (index > 0 ? (index - 1) * margin + margin / 2 : 0);
             }
 
-
-            offsetChanged (margin) {
-                this.positiveOffset = margin / 2;
+            computeOffsets() {
+                this.positiveOffset = this.cellMargin / 2;
                 this.negativeOffset = -this.positiveOffset;
                 this.verticalCenterOffset = this.positiveOffset + this.cellWidth / 2;
                 this.horizontalCenterOffset = this.positiveOffset + this.cellHeight / 2;
             }
 
-            rowCountChanged (count) {
+            rowCountChanged(count) {
                 this.horizontalAxes = Array.from({length: count + 1});
             }
 
-            colCountChanged (count) {
+            colCountChanged(count) {
                 this.verticalAxes = Array.from({length: count + 1});
             }
 
