@@ -131,7 +131,10 @@ Example:
             }
 
             computeStyles() {
-                const customStyle = document.head.querySelector('custom-style#' + this.id) || document.createElement('custom-style');
+
+                const idSelector = this.id ? `#${this.id}` : '';
+                const customStyleSelector = `custom-style${idSelector}`;
+                const customStyle = document.head.querySelector(customStyleSelector) || document.createElement('custom-style');
                 const style = customStyle && customStyle.querySelector('style') || document.createElement('style');
 
                 customStyle.id = this.id;
@@ -178,7 +181,7 @@ Example:
                 }
 
                 style.textContent = `
-                    draggable-grid#${this.id} {
+                    draggable-grid${idSelector} {
                         ${styleVars}
                     }
                     ${styleRules}
@@ -221,7 +224,9 @@ Example:
                     let top = parseInt(player.style.top.split('px')[0]);
                     let newLeft = left + e.detail.ddx;
                     let newTop = top + e.detail.ddy;
-                    let position = this.getClosestPosition(newLeft, newTop);
+                    let cols = player.getAttribute('width');
+                    let rows = player.getAttribute('height');
+                    let position = this.getClosestPosition(newLeft, newTop, rows, cols);
                     player.style.transition = 'none';
                     player.style.left = `${newLeft}px`;
                     player.style.top = `${newTop}px`;
@@ -279,8 +284,17 @@ Example:
                     let newTop = top + e.detail.ddy;
                     let newWidth = width + (isLeft ? -e.detail.ddx : e.detail.ddx);
                     let newHeight = height + (isTop ? -e.detail.ddy : e.detail.ddy);
-                    let position = this.getClosestPosition(newLeft, newTop, isTop || isLeft);
-                    let size = this.getClosestSize(newWidth, newHeight);
+                    let row = +player.getAttribute('row')
+                    let col = +player.getAttribute('col')
+                    let cols = +player.getAttribute('width');
+                    let rows = +player.getAttribute('height');
+                    let position = this.getClosestPosition(newLeft, newTop, 1, 1, isTop || isLeft);
+                    let size = this.getClosestSize(
+                        newWidth,
+                        newHeight,
+                        isLeft ? cols + col: this.colCount - col,
+                        isTop ? rows + row: this.rowCount - row
+                    );
                     player.style.transition = 'none';
                     isLeft && newWidth >= this.cellWidth && (player.style.left = `${newLeft}px`);
                     isTop && newHeight >= this.cellHeight && (player.style.top = `${newTop}px`);
@@ -316,32 +330,48 @@ Example:
 
             }
 
-            getClosestPosition(x, y, floorHalf = false) {
+            getClosestPosition(x, y, rows = 1, cols = 1, floorHalf = false) {
+                let position;
                 let colRatio = (x + this.cellMargin / 2) / (this.cellWidth + this.cellMargin);
                 let rowRatio = (y + this.cellMargin / 2) / (this.cellHeight + this.cellMargin);
 
                 if (floorHalf) {
-                    return {
+                    position = {
                         // Depending on which resize gripper (direction = top or left, or both) is used,
                         // we wants to floor the half distance in the proper direction, to finally fall in the desired cell.
                         col : colRatio % 0.5 === 0 ? Math.floor(colRatio) : Math.round(colRatio),
                         row : rowRatio % 0.5 === 0 ? Math.floor(rowRatio) : Math.round(rowRatio)
                     };
                 } else {
-                    return {
+                    position = {
                         col : Math.round(colRatio),
                         row : Math.round(rowRatio)
                     };
                 }
 
+                // Ensure we are falling into the grid.
+                // Min = 0.
+                // Max = grid size - player size.
+                return {
+                    col: Math.max(Math.min(position.col, this.colCount - cols), 0),
+                    row: Math.max(Math.min(position.row, this.rowCount - rows), 0)
+                }
 
             }
 
-            getClosestSize(width, height) {
-                return {
+            getClosestSize(width, height, maxWidth = this.colCount, maxHeight = this.rowCount) {
+                let size = {
                     height: Math.round((height + this.cellMargin / 2) / (this.cellHeight + this.cellMargin)),
                     width:  Math.round((width + this.cellMargin / 2) / (this.cellWidth + this.cellMargin))
                 };
+
+                // Ensure we are falling into the grid.
+                // Min = 1.
+                // Max = grid size (or provided max)
+                return {
+                    width: Math.max(Math.min(size.width, maxWidth), 1),
+                    height: Math.max(Math.min(size.height, maxHeight), 1)
+                }
             }
 
             getResizerTile(resizer) {
