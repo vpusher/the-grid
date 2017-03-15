@@ -201,10 +201,16 @@ Example:
 
 
             _handleMove(e) {
-                var player = e.target,
+                let player = e.target,
                     state = e.detail.state;
 
+                // Only handle direct children of the grid.
                 if (Polymer.dom(player).parentNode !== this) return;
+
+                // Create a placeholder if not present.
+                if (!this.placeholder) {
+                    this.placeholder = document.createElement('div');
+                }
 
                 if (state == 'start') {
                     let styles = window.getComputedStyle(player);
@@ -251,14 +257,18 @@ Example:
             }
 
             _handleResize(e) {
-                var player = this.getResizerTile(e.target),
-                    state = e.detail.state;
-
-                var resizeType = e.target.getAttribute('resize'),
+                let player = this.getResizerHost(e.target),
+                    state = e.detail.state,
+                    resizeType = e.target.getAttribute('resize'),
                     isTop = ['top', 'top-right', 'top-left'].includes(resizeType),
                     isLeft = ['left', 'top-left', 'bottom-left'].includes(resizeType),
                     isWidth = ['left', 'right', 'bottom-right', 'bottom-left', 'top-right', 'top-left'].includes(resizeType),
                     isHeight = ['top', 'bottom', 'top-right', 'bottom-right',  'bottom-left', 'top-left'].includes(resizeType);
+
+                // Create a placeholder if not present.
+                if (!this.placeholder) {
+                    this.placeholder = document.createElement('div');
+                }
 
                 if (state == 'start') {
                     let styles = window.getComputedStyle(player);
@@ -374,7 +384,7 @@ Example:
                 }
             }
 
-            getResizerTile(resizer) {
+            getResizerHost(resizer) {
                 var current = resizer;
 
                 while (current.parentNode !== this) {
