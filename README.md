@@ -8,8 +8,9 @@ Grid layout custom element based on **ES2015** and **Polymer 2.0**.
 
 Features:
 
-* Drag and drop tiles
-* Resize tiles
+* Draggable tiles
+* Resizable tiles
+* Mobile support
 
 Example:
 <!---
@@ -141,7 +142,7 @@ polymer serve -o
 
 Add a `<the-grid>` element to your page:
 
-```
+```html
 <the-grid></the-grid>
 ```
 
@@ -149,7 +150,7 @@ Add a `<the-grid>` element to your page:
 
 You can add the `draggable` or `resizable` attribute (or both) to enable respectively tile's drag'n'drop or tile's resizing.
 
-```
+```html
 <the-grid draggable></the-grid>
 ```
 
@@ -169,7 +170,7 @@ Each direct child of `<the-grid>` will be considered as a grid tile that can be 
 
 Grid's children can be of any types: `<div>`, `<p>`, `<span>`, `<tile>`, ... or even your own custom element: `<grid-tile>`.
 
-```
+```html
 <the-grid>
     <div col="2" row="1" height="1" width="3" ></div>
     <paper-card col="0" row="0" height="2" width="2" ></paper-card>

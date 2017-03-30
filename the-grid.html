@@ -91,7 +91,7 @@ Example:
                      */
                     cellMargin: {
                         type: Number,
-                        value: 10,
+                        value: 0,
                         reflectToAttribute: true,
                         observer: 'computeStyles'
                     },
@@ -188,6 +188,11 @@ Example:
                         });
 
                         Polymer.Gestures[addOrRemoveMoveListener](child, 'track', moveHandler);
+
+                        // We need this dirty prevent default since 'track' gestures
+                        // - let pass some events before triggering the 'start' state.
+                        // - does not allow access to the real source event on touch devices.
+                        child.addEventListener('touchmove', this._safePreventDefault);
                     }
                 });
 
@@ -300,8 +305,8 @@ Example:
                 }
 
                 if (state == 'track') {
-                    let left = parseInt(player.style.left.split('px')[0]);
-                    let top = parseInt(player.style.top.split('px')[0]);
+                    let left = parseFloat(player.style.left.split('px')[0]);
+                    let top = parseFloat(player.style.top.split('px')[0]);
                     let newLeft = left + e.detail.ddx;
                     let newTop = top + e.detail.ddy;
                     let cols = player.getAttribute('width');
@@ -324,7 +329,7 @@ Example:
                     this.placeholder.style.display = '';
                 }
 
-                e.detail.sourceEvent.preventDefault && e.detail.sourceEvent.preventDefault();
+                this._safePreventDefault(e.detail.sourceEvent);
                 e.preventDefault();
 
             }
@@ -363,10 +368,10 @@ Example:
                 }
 
                 if (state == 'track') {
-                    let left = parseInt(player.style.left.split('px')[0]);
-                    let top = parseInt(player.style.top.split('px')[0]);
-                    let width = parseInt(player.style.width.split('px')[0]);
-                    let height = parseInt(player.style.height.split('px')[0]);
+                    let left = parseFloat(player.style.left.split('px')[0]);
+                    let top = parseFloat(player.style.top.split('px')[0]);
+                    let width = parseFloat(player.style.width.split('px')[0]);
+                    let height = parseFloat(player.style.height.split('px')[0]);
                     let newLeft = left + e.detail.ddx;
                     let newTop = top + e.detail.ddy;
                     let newWidth = width + (isLeft ? -e.detail.ddx : e.detail.ddx);
@@ -411,9 +416,18 @@ Example:
                     this.placeholder.style.display = '';
                 }
 
-                e.detail.sourceEvent.preventDefault && e.detail.sourceEvent.preventDefault();
+                this._safePreventDefault(e.detail.sourceEvent);
                 e.preventDefault();
 
+            }
+
+            /**
+             * Check the existence of the #preventDefault method before calling it.
+             * @param {Event} event the event to prevent
+             * @private
+             */
+            _safePreventDefault(event) {
+                event.preventDefault && event.preventDefault();
             }
 
             /**
