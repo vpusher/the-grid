@@ -94,7 +94,7 @@ Example:
 ```
 -->
 ```html
-<the-grid draggable resizable animated col-count="6" row-count="4">
+<the-grid draggable resizable animated col-count="6" row-count="4" cell-margin="10">
     <div class="tile" col="0" row="0" height="1" width="4">
         <span resize="right">│</span>
     </div>
@@ -236,6 +236,7 @@ Resize grippers can take the following values:
 
 ## History
 
+* **1.0.1:** enhanced mobile support.
 * **1.0.0:** initial release.
 
 ## License
