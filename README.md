@@ -30,6 +30,10 @@ Example:
         the-grid > div[placeholder] {
             background: #afafaf;
         }
+        
+        the-grid [resize] {
+            position: absolute;
+        }
 
         the-grid [resize="bottom-right"] {
             bottom: 0;
@@ -179,7 +183,7 @@ Each child needs **4 attributes** which define its position and size within the 
 * **width**: the column spanning of the tile as an amount of columns  (~colspan).
 * **height**: the row spanning of the tile as an amount of rows (~rowspan).
 
-#### The grid's placeholder
+### The grid's placeholder
 
 If you need some placeholder while dragging or resizing a tile for preview purpose,
 simply add a child to `<the-grid>` with the placeholder attribute.
@@ -192,7 +196,7 @@ simply add a child to `<the-grid>` with the placeholder attribute.
 
 > This will enable a grey placeholder in the grid only visible while dragging and resizing tiles.
 
-#### The tile's grippers (akka resizers).
+### The tile's grippers (akka resizers).
 
 If the grid has the `resizable` attribute, tiles can be resized by grabbing elements called **grippers** or **resizers**.
 
