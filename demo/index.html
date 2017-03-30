@@ -5,74 +5,83 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>draggable-grid demo</title>
+    <title>the-grid demos</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../draggable-grid.html">
+    <link rel="import" href="../the-grid.html">
 
     <custom-style>
         <style is="custom-style" include="demo-pages-shared-styles">
-            draggable-grid {
+            the-grid {
                 border: 1px solid #ddd;
             }
 
-            draggable-grid [resize] {
+            the-grid [resize] {
                 position: absolute;
             }
 
-            draggable-grid [resize="bottom-right"] {
+            the-grid [resize="bottom-right"] {
                 bottom: 0;
                 right: 0;
                 cursor: nwse-resize;
             }
 
-            draggable-grid [resize="bottom-left"] {
+            the-grid [resize="bottom-left"] {
                 bottom: 0;
                 left: 0;
                 cursor: nesw-resize;
             }
 
-            draggable-grid [resize="top-right"] {
+            the-grid [resize="top-right"] {
                 top: 0;
                 right: 0;
                 cursor: nesw-resize;
             }
 
-            draggable-grid [resize="top-left"] {
+            the-grid [resize="top-left"] {
                 top: 0;
                 left: 0;
                 cursor: nwse-resize;
             }
 
-            draggable-grid [resize="left"] {
+            the-grid [resize="left"] {
                 top: 50%;
                 left: 0;
                 cursor: ew-resize;
                 margin-top: -10px;
             }
 
-            draggable-grid [resize="top"] {
-                top: 0%;
+            the-grid [resize="top"] {
+                top: 0;
+                left: 0;
                 width: 100%;
                 text-align: center;
                 cursor: ns-resize;
             }
 
-            draggable-grid [resize="right"] {
+            the-grid [resize="right"] {
                 top: 50%;
                 right: 0;
                 cursor: ew-resize;
                 margin-top: -10px;
             }
 
-            draggable-grid [resize="bottom"] {
+            the-grid [resize="bottom"] {
                 bottom: 0;
+                left: 0;
                 width: 100%;
                 text-align: center;
                 cursor: ns-resize;
+            }
+
+            the-grid tile {
+                box-sizing: border-box;
+                padding: 10px;
+                text-align: center;
+                color: white;
             }
         </style>
     </custom-style>
@@ -80,41 +89,36 @@
 <body>
 
 <div class="vertical-section-container">
-    <h3>Movable tiles</h3>
+    <h3>Basic static grid</h3>
     <demo-snippet>
         <template>
             <style>
                 #grid1 tile {
-                    background-color: orangered;
-                    opacity: 0.7;
-                }
-
-                #grid1 [placeholder] {
-                    background-color: lightgray;
-                    opacity: 0.7;
+                    background-color: coral;
                 }
             </style>
 
-            <draggable-grid id="grid1" cell-height="50" cell-width="50" cell-margin="15" col-count="15" row-count="5" animated>
-                <tile col="0" row="0" height="1" width="1"></tile>
-                <tile col="1" row="0" height="1" width="1"></tile>
-                <tile col="2" row="0" height="1" width="1"></tile>
-                <tile col="0" row="1" height="3" width="3"></tile>
-                <tile col="0" row="4" height="1" width="3"></tile>
+            <the-grid id="grid1" cell-height="100" cell-width="100" cell-margin="15" col-count="6" row-count="3">
+                <tile col="0" row="0" height="3" width="1"></tile>
+                <tile col="1" row="0" height="1" width="3"></tile>
+                <tile col="1" row="2" height="1" width="1"></tile>
+                <tile col="2" row="1" height="1" width="1"></tile>
+                <tile col="3" row="1" height="2" width="1"></tile>
+                <tile col="4" row="0" height="3" width="2"></tile>
                 <div placeholder></div>
-            </draggable-grid>
+            </the-grid>
         </template>
     </demo-snippet>
 </div>
 
 <div class="vertical-section-container">
-    <h3>Resizable tiles</h3>
+    <h3>Draggable tiles grid</h3>
     <demo-snippet>
         <template>
             <style>
                 #grid2 tile {
-                    background-color: slateblue;
-                    color: white;
+                    background-color: limegreen;
+                    opacity: 0.7;
                 }
 
                 #grid2 [placeholder] {
@@ -122,21 +126,127 @@
                 }
             </style>
 
-            <draggable-grid id="grid2" cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="5" animated>
-                <tile col="2" row="0" height="1" width="1" >
+            <the-grid id="grid2" draggable cell-height="75" cell-width="75" cell-margin="5" col-count="10" row-count="5">
+                <tile col="1" row="1" height="1" width="1">Drag me</tile>
+                <tile col="4" row="5" height="2" width="1"></tile>
+                <tile col="2" row="3" height="2" width="2"></tile>
+                <div placeholder></div>
+            </the-grid>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container">
+    <h3>Resizable tiles grid</h3>
+    <demo-snippet>
+        <template>
+            <style>
+                #grid3 tile {
+                    background-color: slateblue;
+                    opacity: 0.7;
+                }
+
+                #grid3 [placeholder] {
+                    background-color: lightgray;
+                }
+            </style>
+
+            <the-grid id="grid3" resizable cell-height="100" cell-width="100" cell-margin="5" col-count="8" row-count="5">
+                <tile col="2" row="0" height="1" width="4" >
+                    Resize me
                     <span resize="right">│</span>
                 </tile>
-                <tile col="0" row="1" height="2" width="2" >
+                <tile col="0" row="1" height="3" width="2" >
                     <span resize="bottom-right">┘</span>
                 </tile>
-                <tile col="5" row="4" height="1" width="1" >
+                <tile col="5" row="2" height="2" width="2" >
                     <span resize="left">│</span>
                     <span resize="right">│</span>
                     <span resize="top">─</span>
                     <span resize="bottom">─</span>
                 </tile>
                 <div placeholder></div>
-            </draggable-grid>
+            </the-grid>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container">
+    <h3>Animated grid (smooth moves and resizes)</h3>
+    <demo-snippet>
+        <template>
+            <style>
+                #grid4 tile {
+                    background-color: tomato;
+                    opacity: 0.7;
+                }
+
+                #grid4 [placeholder] {
+                    background-color: lightgray;
+                }
+            </style>
+
+            <the-grid id="grid4" draggable resizable animated cell-height="80" cell-width="80" cell-margin="5" col-count="10" row-count="5">
+                <tile class="tile" col="0" row="0" height="5" width="1" >
+                </tile>
+                <tile class="tile" col="3" row="3" height="1" width="1" >
+                    <span resize="bottom-right">┘</span>
+                </tile>
+                <tile class="tile" col="5" row="1" height="2" width="2" >
+                    <span resize="left">│</span>
+                    <span resize="right">│</span>
+                    <span resize="top">─</span>
+                    <span resize="bottom">─</span>
+                    <span resize="top-right">┐</span>
+                    <span resize="top-left">┌</span>
+                    <span resize="bottom-right">┘</span>
+                    <span resize="bottom-left">└</span>
+                </tile>
+                <div placeholder></div>
+            </the-grid>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container">
+    <h3>Emoji grid</h3>
+    <demo-snippet>
+        <template>
+            <style>
+                #grid-emoji span {
+                    font-size: 32px;
+                    line-height: 32px;
+                    cursor: move;
+                }
+
+                #grid-emoji [placeholder] {
+                    background-color: lightgray;
+                    border-radius: 50%;
+                }
+            </style>
+
+            <dom-bind id="binding-emoji">
+                <template>
+                    <the-grid id="grid-emoji" draggable animated cell-height="32" cell-width="32" cell-margin="0"
+                              col-count="15" row-count="15">
+                        <template is="dom-repeat" items="[[emojis]]" as="emoji">
+                            <span col$="[[randomPosition()]]" row$="[[randomPosition()]]" height="1" width="1">[[emoji]]</span>
+                        </template>
+                        <div placeholder></div>
+                    </the-grid>
+                </template>
+            </dom-bind>
+
+            <script>
+                let binding = document.querySelector('#binding-emoji');
+
+                // Emoji range from 😁 (0x1F601) to 😶 (0x1F637)
+                binding.emojis = Array.from({length: (0x1F637 - 0x1F601)}, (v, k) => String.fromCodePoint(k + 0x1F601));
+
+                binding.randomPosition = function () {
+                    return Math.round(Math.random() * 15);
+                }
+            </script>
         </template>
     </demo-snippet>
 </div>

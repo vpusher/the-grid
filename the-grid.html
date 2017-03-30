@@ -1,16 +1,16 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <!--
-`<draggable-grid>` is a grid layout.
+`<the-grid>` is a grid layout element width drag n drop and resize capabilities.
 
 Example:
 
-    <draggable-grid cell-height="150" cell-width="150" cell-margin="10"></draggable-grid>
+    <the-grid cell-height="150" cell-width="150" cell-margin="10"></the-grid>
 
 @demo demo/index.html
 -->
 
-<dom-module id="draggable-grid">
+<dom-module id="the-grid">
     <template>
         <style>
             :host {
@@ -38,7 +38,6 @@ Example:
                 transition: var(--grid-move-animation-transition);
                 -webkit-touch-callout: none; /* iOS Safari */
                 -webkit-user-select: none; /* Safari */
-                -khtml-user-select: none; /* Konqueror HTML */
                 -moz-user-select: none; /* Firefox */
                 -ms-user-select: none; /* Internet Explorer/Edge */
                 user-select: none; /* Non-prefixed version, currently
@@ -58,51 +57,105 @@ Example:
     </template>
 
     <script>
-            class DraggableGrid extends Polymer.GestureEventListeners(Polymer.Element) {
+        class TheGrid extends Polymer.GestureEventListeners(Polymer.Element) {
 
-            static get is() { return 'draggable-grid'; }
+            static get is() { return 'the-grid'; }
 
             static get properties() {
                 return {
+                    /**
+                     * Defines the height in pixels of the grid unit.
+                     * @type {number}
+                     */
                     cellHeight: {
                         type: Number,
                         value: 100,
                         reflectToAttribute: true,
                         observer: 'computeStyles'
                     },
+
+                    /**
+                     * Defines the width in pixels of the grid unit.
+                     * @type {number}
+                     */
                     cellWidth: {
                         type: Number,
                         value: 100,
                         reflectToAttribute: true,
                         observer: 'computeStyles'
                     },
+
+                    /**
+                     * Defines the margin in pixels between grid units.
+                     * @type {number}
+                     */
                     cellMargin: {
                         type: Number,
                         value: 10,
                         reflectToAttribute: true,
                         observer: 'computeStyles'
                     },
+
+                    /**
+                     * Defines the number of columns of the grid (its width in grid unit).
+                     * @type {number}
+                     */
                     colCount: {
                         type: Number,
                         value: 10,
                         reflectToAttribute: true,
                         observer: 'computeStyles'
                     },
+
+                    /**
+                     * Defines the number of rows of the grid (its height in grid unit).
+                     * @type {number}
+                     */
                     rowCount: {
                         type: Number,
                         value: 10,
                         reflectToAttribute: true,
                         observer: 'computeStyles'
                     },
+
+                    /**
+                     * Whether the moves and resizes are animated or not.
+                     * @type {boolean}
+                     */
                     animated: {
                         type: Boolean,
                         value: false,
                         reflectToAttribute: true,
                         observer: 'computeStyles'
+                    },
+
+                    /**
+                     * Enable the drag n drop (of the grid's tiles) capability.
+                     * @type {boolean}
+                     */
+                    draggable: {
+                        type: Boolean,
+                        value: false,
+                        reflectToAttribute: true,
+                        observer: '_attachEvents'
+                    },
+
+                    /**
+                     * Enable the resize (of the grid's tiles) capability.
+                     * @type {boolean}
+                     */
+                    resizable: {
+                        type: Boolean,
+                        value: false,
+                        reflectToAttribute: true,
+                        observer: '_attachEvents'
                     }
                 }
             }
 
+            /**
+             * Create a `<the-grid>` element.
+             */
             constructor() {
                 super();
             }
@@ -110,26 +163,43 @@ Example:
             connectedCallback () {
                 super.connectedCallback();
                 this.computeStyles();
+                this._attachEvents();
+            }
 
-                var moveHandler = this._handleMove.bind(this);
-                var resizeHandler = this._handleResize.bind(this);
+            /**
+             * Adds and removes tracking events depending on the `resizable` and `draggable` properties.
+             * @private
+             */
+            _attachEvents() {
+                let moveHandler = this._handleMoveFn = this._handleMoveFn || this._handleMove.bind(this);
+                let resizeHandler = this._handleResizeFn = this._handleResizeFn || this._handleResize.bind(this);
+                let addOrRemoveResizeListener = this.resizable ? 'addListener' : 'removeListener';
+                let addOrRemoveMoveListener = this.draggable ? 'addListener' : 'removeListener';
 
                 Array.prototype.forEach.call(this.children, child => {
                     let isPlaceholder = child.hasAttribute('placeholder');
                     if (isPlaceholder) {
                         this.placeholder = child;
                     } else {
-                        var resizers = child.querySelectorAll('[resize]') || [];
+                        let resizers = child.querySelectorAll('[resize]') || [];
 
                         Array.prototype.forEach.call(resizers, resizer => {
-                            this._addEventListenerToNode(resizer, 'track', resizeHandler);
+                            Polymer.Gestures[addOrRemoveResizeListener](resizer, 'track', resizeHandler);
                         });
 
-                        this._addEventListenerToNode(child, 'track', moveHandler);
+                        Polymer.Gestures[addOrRemoveMoveListener](child, 'track', moveHandler);
                     }
                 });
+
             }
 
+            /**
+             * Compute the style sheet of the grid depending on its attributes/properties.
+             *
+             * It allows hot update of the grid attributes/properties, generating an updated style sheet.
+             *
+             * IMPORTANT: If you have several `<the-grid>` in your page, be sure to give them a proper `id` attribute, so they can have their own style sheet without any collision.
+             */
             computeStyles() {
 
                 const idSelector = this.id ? `#${this.id}` : '';
@@ -153,7 +223,7 @@ Example:
                     width = this.cellWidth,
                     cols = this.colCount,
                     rows = this.rowCount,
-                    selfSelector = `draggable-grid${this.id ? '#' + this.id : ''}`;
+                    selfSelector = `the-grid${this.id ? '#' + this.id : ''}`;
 
                 for(let i = 0; i < cols; i++) {
 
@@ -181,7 +251,7 @@ Example:
                 }
 
                 style.textContent = `
-                    draggable-grid${idSelector} {
+                    the-grid${idSelector} {
                         ${styleVars}
                     }
                     ${styleRules}
@@ -200,6 +270,10 @@ Example:
             }
 
 
+            /**
+             * Process events related to a player being moved.
+             * @private
+             */
             _handleMove(e) {
                 let player = e.target,
                     state = e.detail.state;
@@ -250,12 +324,15 @@ Example:
                     this.placeholder.style.display = '';
                 }
 
+                e.detail.sourceEvent.preventDefault && e.detail.sourceEvent.preventDefault();
                 e.preventDefault();
-                e.stopPropagation();
-                return false;
 
             }
 
+            /**
+             * Process events related to a player being resized.
+             * @private
+             */
             _handleResize(e) {
                 let player = this.getResizerHost(e.target),
                     state = e.detail.state,
@@ -302,8 +379,8 @@ Example:
                     let size = this.getClosestSize(
                         newWidth,
                         newHeight,
-                        isLeft ? cols + col: this.colCount - col,
-                        isTop ? rows + row: this.rowCount - row
+                        isLeft ? cols + col : this.colCount - col,
+                        isTop ? rows + row : this.rowCount - row
                     );
                     player.style.transition = 'none';
                     isLeft && newWidth >= this.cellWidth && (player.style.left = `${newLeft}px`);
@@ -334,12 +411,20 @@ Example:
                     this.placeholder.style.display = '';
                 }
 
+                e.detail.sourceEvent.preventDefault && e.detail.sourceEvent.preventDefault();
                 e.preventDefault();
-                e.stopPropagation();
-                return false;
 
             }
 
+            /**
+             * Find the closest player position (column and row as indexes) for the given X and Y.
+             * @param {number} x position in pixels on X screen axis.
+             * @param {number} y position in pixels on Y screen axis.
+             * @param {number} [rows=1] indicates the height in grid units of the player being positioned. This ensure the returned position take into account the size of the player.
+             * @param {number} [cols=1] indicates the width in grid units of the player being positioned. This ensure the returned position take into account the size of the player.
+             * @param {boolean} [floorHalf=false] Tells whether we need to floor or ceil when the value is half (e.g. 1.5, 3.5, 12.5, ...).
+             * @returns {{col: number, row: number}} The closest position as an object with a `row` and `col` properties.
+             */
             getClosestPosition(x, y, rows = 1, cols = 1, floorHalf = false) {
                 let position;
                 let colRatio = (x + this.cellMargin / 2) / (this.cellWidth + this.cellMargin);
@@ -369,6 +454,14 @@ Example:
 
             }
 
+            /**
+             * Find the closest player size (width and height as grid units) for the given width and height.
+             * @param {number} width width in pixels.
+             * @param {number} height height in pixels.
+             * @param {number} [maxWidth=this.colCount] indicates the max width allowed for the returned size. This ensure the returned size fall into the grid by taking into account the player position.
+             * @param {number} [maxHeight=this.rowCount] indicates the max height allowed for the returned size. This ensure the returned size fall into the grid by taking into account the player position.
+             * @returns {{width: number, height: number}} The closest size as an object with a `width` and `height` properties.
+             */
             getClosestSize(width, height, maxWidth = this.colCount, maxHeight = this.rowCount) {
                 let size = {
                     height: Math.round((height + this.cellMargin / 2) / (this.cellHeight + this.cellMargin)),
@@ -384,6 +477,11 @@ Example:
                 }
             }
 
+            /**
+             * Find the tile element (direct children of `the-grid`) hosting the given resizer element.
+             * @param {HTMLElement} resizer element used as resizer gripper.
+             * @returns {HTMLElement} The tile element hosting the resizer.
+             */
             getResizerHost(resizer) {
                 var current = resizer;
 
@@ -396,7 +494,7 @@ Example:
 
         }
 
-        customElements.define(DraggableGrid.is, DraggableGrid);
+        customElements.define(TheGrid.is, TheGrid);
 
     </script>
 </dom-module>

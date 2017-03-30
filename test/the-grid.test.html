@@ -5,25 +5,25 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>draggable-grid test</title>
+    <title>the-grid test</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
 
-    <link rel="import" href="../draggable-grid.html">
+    <link rel="import" href="../the-grid.html">
 </head>
 <body>
-<test-fixture id="draggable-grid">
+<test-fixture id="the-grid">
     <template>
-        <draggable-grid></draggable-grid>
+        <the-grid></the-grid>
     </template>
 </test-fixture>
 
 <script>
-    suite('<draggable-grid>', function() {
+    suite('<the-grid>', function() {
         test('instantiating the element works', function() {
-            var element = fixture('draggable-grid');
-            assert.equal(element.constructor.is, 'draggable-grid');
+            var element = fixture('the-grid');
+            assert.equal(element.constructor.is, 'the-grid');
         });
     });
 </script>

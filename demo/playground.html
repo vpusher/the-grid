@@ -5,16 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>draggable-grid demo</title>
-    <script>window.ShadyDOM = { force: true };</script>
+    <title>Grid Playground</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../draggable-grid.html">
+    <link rel="import" href="../the-grid.html">
     <link rel="import" href="../debug-grid.html">
 
     <style>
-        draggable-grid .tile {
+        the-grid .tile {
             background: #ff4d43;
             opacity: 0.9;
             color: white;
@@ -22,15 +21,15 @@
             overflow: hidden;
         }
 
-        draggable-grid [placeholder] {
+        the-grid [placeholder] {
             background: #afafaf;
         }
 
-        draggable-grid .tile > span {
+        the-grid .tile > span {
             position: absolute;
         }
 
-        draggable-grid .tile > span:first-child {
+        the-grid .tile > span:first-child {
             top: 50%;
             left: 50%;
             margin-left: -15px;
@@ -38,52 +37,52 @@
             font-size: 50px;
         }
 
-        draggable-grid [resize="bottom-right"] {
+        the-grid [resize="bottom-right"] {
             bottom: 0;
             right: 0;
             cursor: nwse-resize;
         }
 
-        draggable-grid [resize="bottom-left"] {
+        the-grid [resize="bottom-left"] {
             bottom: 0;
             left: 0;
             cursor: nesw-resize;
         }
 
-        draggable-grid [resize="top-right"] {
+        the-grid [resize="top-right"] {
             top: 0;
             right: 0;
             cursor: nesw-resize;
         }
 
-        draggable-grid [resize="top-left"] {
+        the-grid [resize="top-left"] {
             top: 0;
             left: 0;
             cursor: nwse-resize;
         }
 
-        draggable-grid [resize="left"] {
+        the-grid [resize="left"] {
             top: 50%;
             left: 0;
             cursor: ew-resize;
             margin-top: -10px;
         }
 
-        draggable-grid [resize="top"] {
+        the-grid [resize="top"] {
             top: 0%;
             width: 100%;
             text-align: center;
             cursor: ns-resize;
         }
 
-        draggable-grid [resize="right"] {
+        the-grid [resize="right"] {
             top: 50%;
             right: 0;
             cursor: ew-resize;
             margin-top: -10px;
         }
 
-        draggable-grid [resize="bottom"] {
+        the-grid [resize="bottom"] {
             bottom: 0;
             width: 100%;
             text-align: center;
@@ -96,7 +95,7 @@
 
 <debug-grid cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10"></debug-grid>
 
-<draggable-grid id="grid" cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10" animated>
+<the-grid draggable resizable id="grid" cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10" animated>
     <div class="tile" col="0" row="0" height="1" width="1" >
         <span>0</span>
         <span resize="left">│</span>
@@ -141,7 +140,7 @@
         <span resize="bottom-left">└</span>
     </div>
     <div placeholder></div>
-</draggable-grid>
+</the-grid>
 
 
 </body>
