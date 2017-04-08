@@ -264,7 +264,7 @@ Example:
 
                 // Light Dom customization using external stylesheet.
                 customStyle.appendChild(style);
-                document.head.appendChild(customStyle);
+                Polymer.dom(this).parentNode.appendChild(customStyle);
 
                 // Local DOM (Shadow or Shady) customization using inner stylesheet.
                 this.updateStyles({
