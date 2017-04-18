@@ -1,0 +1,157 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../the-grid.html">
+<link rel="import" href="../debug-grid.html">
+
+<!--
+`<grid-wrapper>` is a container element that wraps <the-grid> for testing purpose and ensure its proper behavior when nested.
+
+Example:
+
+    <grid-wrapper></grid-wrapper>
+-->
+
+<dom-module id="grid-wrapper">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            the-grid .tile {
+                background: #ff4d43;
+                opacity: 0.9;
+                color: white;
+                cursor: move;
+                overflow: hidden;
+            }
+
+            the-grid [placeholder] {
+                background: #afafaf;
+            }
+
+            the-grid .tile > span {
+                position: absolute;
+            }
+
+            the-grid .tile > span:first-child {
+                top: 50%;
+                left: 50%;
+                margin-left: -15px;
+                margin-top: -25px;
+                font-size: 50px;
+            }
+
+            the-grid [resize="bottom-right"] {
+                bottom: 0;
+                right: 0;
+                cursor: nwse-resize;
+            }
+
+            the-grid [resize="bottom-left"] {
+                bottom: 0;
+                left: 0;
+                cursor: nesw-resize;
+            }
+
+            the-grid [resize="top-right"] {
+                top: 0;
+                right: 0;
+                cursor: nesw-resize;
+            }
+
+            the-grid [resize="top-left"] {
+                top: 0;
+                left: 0;
+                cursor: nwse-resize;
+            }
+
+            the-grid [resize="left"] {
+                top: 50%;
+                left: 0;
+                cursor: ew-resize;
+                margin-top: -10px;
+            }
+
+            the-grid [resize="top"] {
+                top: 0%;
+                width: 100%;
+                text-align: center;
+                cursor: ns-resize;
+            }
+
+            the-grid [resize="right"] {
+                top: 50%;
+                right: 0;
+                cursor: ew-resize;
+                margin-top: -10px;
+            }
+
+            the-grid [resize="bottom"] {
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                cursor: ns-resize;
+            }
+        </style>
+
+        <div id="container">
+            <debug-grid cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10"></debug-grid>
+            <the-grid draggable resizable cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10" animated>
+                <div class="tile" col="0" row="0" height="1" width="1" >
+                    <span>0</span>
+                    <span resize="left">│</span>
+                </div>
+                <div class="tile" col="2" row="0" height="1" width="1" >
+                    <span>1</span>
+                    <span resize="right">│</span>
+                </div>
+                <div class="tile" col="2" row="2" height="1" width="1" >
+                    <span>2</span>
+                    <span resize="top">─</span>
+                </div>
+                <div class="tile" col="3" row="2" height="1" width="1" >
+                    <span>3</span>
+                    <span resize="bottom">─</span>
+                </div>
+                <div class="tile" col="5" row="1" height="2" width="2" >
+                    <span>4</span>
+                    <span resize="top-right">┐</span>
+                </div>
+                <div class="tile" col="0" row="1" height="2" width="2" >
+                    <span>5</span>
+                    <span resize="top-left">┌</span>
+                </div>
+                <div class="tile" col="0" row="3" height="1" width="1" >
+                    <span>6</span>
+                    <span resize="bottom-left">└</span>
+                </div>
+                <div class="tile" col="0" row="5" height="2" width="2" >
+                    <span>7</span>
+                    <span resize="bottom-right">┘</span>
+                </div>
+                <div class="tile" col="5" row="4" height="1" width="1" >
+                    <span>8</span>
+                    <span resize="left">│</span>
+                    <span resize="right">│</span>
+                    <span resize="top">─</span>
+                    <span resize="bottom">─</span>
+                    <span resize="top-right">┐</span>
+                    <span resize="top-left">┌</span>
+                    <span resize="bottom-right">┘</span>
+                    <span resize="bottom-left">└</span>
+                </div>
+                <div placeholder></div>
+            </the-grid>
+        </div>
+    </template>
+
+    <script>
+        class GridWrapper extends Polymer.Element {
+
+            static get is() { return 'grid-wrapper'; }
+
+        }
+
+        customElements.define(GridWrapper.is, GridWrapper);
+    </script>
+</dom-module>
