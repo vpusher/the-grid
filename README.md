@@ -236,6 +236,7 @@ Resize grippers can take the following values:
 
 ## History
 
+* **1.0.2:** fixes shadow dom wrapping.
 * **1.0.1:** enhanced mobile support.
 * **1.0.0:** initial release.
 
