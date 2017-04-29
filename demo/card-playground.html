@@ -1,0 +1,47 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>the-grid demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../debug-grid.html">
+    <link rel="import" href="../the-grid.html">
+    <link rel="import" href="../../game-card/game-card.html">
+
+    <style>
+        the-grid [placeholder] {
+            background: #afafaf;
+        }
+    </style>
+
+</head>
+<body>
+
+<debug-grid cell-height="264" cell-width="186" cell-margin="10" col-count="10" row-count="10"></debug-grid>
+<the-grid draggable cell-height="264" cell-width="186" cell-margin="10" col-count="10" row-count="10" animated>
+    <game-card symbol="♣" rank="1" col="0" row="0" height="1" width="1" >
+    </game-card>
+    <game-card symbol="♥" rank="2" col="2" row="0" height="1" width="1" >
+    </game-card>
+    <game-card symbol="♣" rank="6" col="2" row="2" height="2" width="2" >
+    </game-card>
+    <game-card symbol="♦" rank="9" col="3" row="2" height="1" width="1" >
+    </game-card>
+    <game-card symbol="♣" rank="6" col="5" row="1" height="1" width="1" >
+    </game-card>
+    <game-card symbol="♣" rank="10" col="0" row="1" height="1" width="1" >
+    </game-card>
+    <game-card symbol="♥" rank="Q" col="0" row="3" height="2" width="3" >
+    </game-card>
+    <game-card symbol="♠" rank="K" col="0" row="5" height="1" width="1" >
+    </game-card>
+    <div placeholder></div>
+</the-grid>
+
+</body>
+</html>
