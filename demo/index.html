@@ -223,15 +223,21 @@
                     background-color: lightgray;
                     border-radius: 50%;
                 }
+
+                dom-repeat {
+                    display: none;
+                }
             </style>
 
             <dom-bind id="binding-emoji">
                 <template>
                     <the-grid id="grid-emoji" draggable animated cell-height="32" cell-width="32" cell-margin="0"
                               col-count="15" row-count="15">
-                        <template is="dom-repeat" items="[[emojis]]" as="emoji">
-                            <span col$="[[randomPosition()]]" row$="[[randomPosition()]]" height="1" width="1">[[emoji]]</span>
-                        </template>
+                        <dom-repeat items="[[emojis]]" as="emoji">
+                            <template>
+                                <span col$="[[randomPosition()]]" row$="[[randomPosition()]]" height="1" width="1">[[emoji]]</span>
+                            </template>
+                        </dom-repeat>
                         <div placeholder></div>
                     </the-grid>
                 </template>

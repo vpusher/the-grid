@@ -163,6 +163,8 @@ Example:
             connectedCallback () {
                 super.connectedCallback();
                 this.computeStyles();
+
+                this.addEventListener('dom-change', this._attachEvents);
                 this._attachEvents();
             }
 

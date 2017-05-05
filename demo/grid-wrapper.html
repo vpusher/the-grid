@@ -92,54 +92,30 @@ Example:
                 text-align: center;
                 cursor: ns-resize;
             }
+
+            dom-repeat {
+                display: none;
+            }
         </style>
 
         <div id="container">
             <debug-grid cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10"></debug-grid>
-            <the-grid draggable resizable cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10" animated>
-                <div class="tile" col="0" row="0" height="1" width="1" >
-                    <span>0</span>
-                    <span resize="left">│</span>
-                </div>
-                <div class="tile" col="2" row="0" height="1" width="1" >
-                    <span>1</span>
-                    <span resize="right">│</span>
-                </div>
-                <div class="tile" col="2" row="2" height="1" width="1" >
-                    <span>2</span>
-                    <span resize="top">─</span>
-                </div>
-                <div class="tile" col="3" row="2" height="1" width="1" >
-                    <span>3</span>
-                    <span resize="bottom">─</span>
-                </div>
-                <div class="tile" col="5" row="1" height="2" width="2" >
-                    <span>4</span>
-                    <span resize="top-right">┐</span>
-                </div>
-                <div class="tile" col="0" row="1" height="2" width="2" >
-                    <span>5</span>
-                    <span resize="top-left">┌</span>
-                </div>
-                <div class="tile" col="0" row="3" height="1" width="1" >
-                    <span>6</span>
-                    <span resize="bottom-left">└</span>
-                </div>
-                <div class="tile" col="0" row="5" height="2" width="2" >
-                    <span>7</span>
-                    <span resize="bottom-right">┘</span>
-                </div>
-                <div class="tile" col="5" row="4" height="1" width="1" >
-                    <span>8</span>
-                    <span resize="left">│</span>
-                    <span resize="right">│</span>
-                    <span resize="top">─</span>
-                    <span resize="bottom">─</span>
-                    <span resize="top-right">┐</span>
-                    <span resize="top-left">┌</span>
-                    <span resize="bottom-right">┘</span>
-                    <span resize="bottom-left">└</span>
-                </div>
+            <the-grid draggable resizable animated cell-height="100" cell-width="100" col-count="10" row-count="10" cell-margin="10">
+                <dom-repeat items="{{boxes}}">
+                    <template>
+                        <div class="tile" col$="{{item.col}}" row$="{{item.row}}" height$="{{item.height}}" width$="{{item.width}}">
+                            <span>{{item.title}}</span>
+                            <span resize="left">│</span>
+                            <span resize="right">│</span>
+                            <span resize="top">─</span>
+                            <span resize="bottom">─</span>
+                            <span resize="top-right">┐</span>
+                            <span resize="top-left">┌</span>
+                            <span resize="bottom-right">┘</span>
+                            <span resize="bottom-left">└</span>
+                        </div>
+                    </template>
+                </dom-repeat>
                 <div placeholder></div>
             </the-grid>
         </div>
@@ -150,6 +126,30 @@ Example:
 
             static get is() { return 'grid-wrapper'; }
 
+            static get properties() {
+                return {
+                    boxes: {
+                        type: Array,
+                        value: function () {
+                            return [
+                                {title: '0', col: 0, row: 0, width: 1, height: 1},
+                                {title: '1', col: 2, row: 0, width: 1, height: 1},
+                                {title: '2', col: 2, row: 2, width: 1, height: 4},
+                                {title: '3', col: 3, row: 2, width: 1, height: 1},
+                                {title: '4', col: 5, row: 1, width: 2, height: 2},
+                                {title: '5', col: 0, row: 1, width: 2, height: 2},
+                                {title: '6', col: 0, row: 3, width: 1, height: 1},
+                                {title: '7', col: 0, row: 5, width: 2, height: 2},
+                                {title: '8', col: 5, row: 4, width: 1, height: 1},
+                            ];
+                        }
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+            }
         }
 
         customElements.define(GridWrapper.is, GridWrapper);
