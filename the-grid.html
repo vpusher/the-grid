@@ -102,7 +102,7 @@ Example:
                      */
                     colCount: {
                         type: Number,
-                        value: 0,
+                        value: 10,
                         reflectToAttribute: true,
                         observer: 'computeStyles'
                     },
@@ -113,7 +113,7 @@ Example:
                      */
                     rowCount: {
                         type: Number,
-                        value: 0,
+                        value: 10,
                         reflectToAttribute: true,
                         observer: 'computeStyles'
                     },
@@ -270,9 +270,9 @@ Example:
             }
 
             ensureSpace(child) {
-                let minHeight = parseInt(child.getAttribute("row")) + parseInt(child.getAttribute("height"));
+                let minHeight = +child.getAttribute("row") + +child.getAttribute("height");
                 if(+this.rowCount === 0 && this.rowCount < minHeight) this.rowCount = minHeight;
-                let minWidth = parseInt(child.getAttribute("col")) + parseInt(child.getAttribute("width"));
+                let minWidth = +child.getAttribute("col") + +child.getAttribute("width");
                 if(+this.colCount === 0 && this.colCount < minWidth) this.colCount = minWidth;
             }
 
