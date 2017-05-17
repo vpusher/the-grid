@@ -149,6 +149,16 @@ Example:
                         value: false,
                         reflectToAttribute: true,
                         observer: '_attachEvents'
+                    },
+
+                    /**
+                     * Allow tiles to overlap each other.
+                     * @type {boolean}
+                     */
+                    overlappable: {
+                        type: Boolean,
+                        value: false,
+                        reflectToAttribute: true
                     }
                 }
             }
@@ -301,14 +311,18 @@ Example:
                     let top = parseFloat(player.style.top.split('px')[0]);
                     let newLeft = left + e.detail.ddx;
                     let newTop = top + e.detail.ddy;
-                    let cols = player.getAttribute('width');
-                    let rows = player.getAttribute('height');
+                    let cols = +player.getAttribute('width');
+                    let rows = +player.getAttribute('height');
                     let position = this.getClosestPosition(newLeft, newTop, rows, cols);
                     player.style.transition = 'none';
                     player.style.left = `${newLeft}px`;
                     player.style.top = `${newTop}px`;
-                    this.placeholder.setAttribute('row', position.row);
-                    this.placeholder.setAttribute('col', position.col);
+
+                    // Check for overlaps if enabled.
+                    if (this.overlappable || !this._isOverlapping(position.col, position.row, cols, rows, [player])){
+                        this.placeholder.setAttribute('row', position.row);
+                        this.placeholder.setAttribute('col', position.col);
+                    }
                 }
 
                 if (state == 'end') {
@@ -384,10 +398,14 @@ Example:
                     isTop && newHeight >= this.cellHeight && (player.style.top = `${newTop}px`);
                     isWidth && newWidth >= this.cellWidth && (player.style.width = `${newWidth}px`);
                     isHeight && newHeight >= this.cellHeight && (player.style.height = `${newHeight}px`);
-                    isTop && this.placeholder.setAttribute('row', position.row);
-                    isLeft && this.placeholder.setAttribute('col', position.col);
-                    isHeight && this.placeholder.setAttribute('height', size.height);
-                    isWidth && this.placeholder.setAttribute('width', size.width);
+
+                    // Check for overlaps if enabled.
+                    if (this.overlappable || !this._isOverlapping(position.col, position.row, size.width, size.height, [player])){
+                        isTop && this.placeholder.setAttribute('row', position.row);
+                        isLeft && this.placeholder.setAttribute('col', position.col);
+                        isHeight && this.placeholder.setAttribute('height', size.height);
+                        isWidth && this.placeholder.setAttribute('width', size.width);
+                    }
                 }
 
                 if (state == 'end') {
@@ -420,6 +438,53 @@ Example:
              */
             _safePreventDefault(event) {
                 event.preventDefault && event.preventDefault();
+            }
+
+
+            /**
+             * Checks for overlaps with other tiles.
+             * @param {Number} col
+             * @param {Number} row
+             * @param {Number} width
+             * @param {Number} height
+             * @return {Boolean|Element} Returns either `false` if no overlap is found or the overlapping element itself.
+             * @private
+             */
+            _isOverlapping(col, row, width, height, exceptions = []) {
+                let overlap = false;
+
+                for (let i = 0; i < this.children.length; i++) {
+
+                    let child = this.children[i];
+
+                    if (child.hasAttribute('placeholder') || exceptions.indexOf(child) !== -1) {
+                        continue;
+                    }
+
+                    let childCoords = this.getCoordinates(child);
+
+                    if(
+                        col <= (childCoords.col + childCoords.width - 1) &&
+                        row <= (childCoords.row + childCoords.height - 1) &&
+                        (col + width - 1) >= childCoords.col &&
+                        (row + height - 1) >= childCoords.row
+                    ) {
+                        overlap = child;
+                        break;
+                    }
+                }
+
+                return overlap;
+
+            }
+
+            getCoordinates(tile) {
+                return {
+                    row:    +tile.getAttribute('row'),
+                    col:    +tile.getAttribute('col'),
+                    width:  +tile.getAttribute('width'),
+                    height: +tile.getAttribute('height')
+                }
             }
 
             /**
