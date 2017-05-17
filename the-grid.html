@@ -33,8 +33,6 @@ Example:
             #container > ::slotted(*) {
                 display: block;
                 position: absolute;
-                width: var(--grid-cell-width);
-                height: var(--grid-cell-height);
                 transition: var(--grid-move-animation-transition);
                 -webkit-touch-callout: none; /* iOS Safari */
                 -webkit-user-select: none; /* Safari */
@@ -232,7 +230,12 @@ Example:
                     cols = this.colCount,
                     rows = this.rowCount;
 
-                let styleRules = '';
+                // Always fallback on [1 x 1] tiles if size is out of boundaries.
+                let styleRules = `
+                        ${startSelector}[width]${endSelector}  { width:  var(--grid-width-1);  }
+                        ${startSelector}[height]${endSelector} { height: var(--grid-height-1); }
+                `;
+
                 let styleVars = {
                     '--grid-width': `${width * cols + margin * (cols - 1)}px`,
                     '--grid-height': `${height * rows + margin * (rows - 1)}px`,
