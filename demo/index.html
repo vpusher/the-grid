@@ -128,7 +128,7 @@
 
             <the-grid id="grid2" draggable cell-height="75" cell-width="75" cell-margin="5" col-count="10" row-count="5">
                 <tile col="1" row="1" height="1" width="1">Drag me</tile>
-                <tile col="4" row="5" height="2" width="1"></tile>
+                <tile col="5" row="0" height="2" width="1"></tile>
                 <tile col="2" row="3" height="2" width="2"></tile>
                 <div placeholder></div>
             </the-grid>
@@ -172,12 +172,12 @@
 </div>
 
 <div class="vertical-section-container">
-    <h3>Animated grid (smooth moves and resizes)</h3>
+    <h3>Overlappable tiles grid</h3>
     <demo-snippet>
         <template>
             <style>
                 #grid4 tile {
-                    background-color: tomato;
+                    background-color: #cdcd51;
                     opacity: 0.7;
                 }
 
@@ -186,7 +186,36 @@
                 }
             </style>
 
-            <the-grid id="grid4" draggable resizable animated cell-height="80" cell-width="80" cell-margin="5" col-count="10" row-count="5">
+            <the-grid id="grid4" overlappable draggable cell-height="100" cell-width="100" cell-margin="5" col-count="8" row-count="5">
+                <tile col="5" row="1" height="3" width="2" >
+                </tile>
+                <tile col="3" row="1" height="3" width="2" >
+                </tile>
+                <tile col="1" row="1" height="3" width="2" >
+                    Stack me
+                </tile>
+                <div placeholder></div>
+            </the-grid>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container">
+    <h3>Animated grid (smooth moves and resizes)</h3>
+    <demo-snippet>
+        <template>
+            <style>
+                #grid5 tile {
+                    background-color: tomato;
+                    opacity: 0.7;
+                }
+
+                #grid5 [placeholder] {
+                    background-color: lightgray;
+                }
+            </style>
+
+            <the-grid id="grid5" draggable resizable animated cell-height="80" cell-width="80" cell-margin="5" col-count="10" row-count="5">
                 <tile class="tile" col="0" row="0" height="5" width="1" >
                 </tile>
                 <tile class="tile" col="3" row="3" height="1" width="1" >
