@@ -149,6 +149,24 @@ Example:
                         value: false,
                         reflectToAttribute: true,
                         observer: '_attachEvents'
+                    },
+
+                    /**
+                     * Internal property to control the current maxRow if rowCount is set to 0
+                     */
+                    _maxRow: {
+                        type: Number,
+                        value: 0,
+                        observer: "computeStyles"
+                    },
+
+                    /**
+                     * Internal property to control the current maxCol if colCount is set to 0
+                     */
+                    _maxCol: {
+                        type: Number,
+                        value: 0,
+                        observer: "computeStyles"
                     }
                 }
             }
@@ -221,8 +239,8 @@ Example:
                 let margin = this.cellMargin,
                     height = this.cellHeight,
                     width = this.cellWidth,
-                    cols = this.colCount,
-                    rows = this.rowCount;
+                    cols = this._shouldColSelfResize() ? this._maxCol : this.colCount,
+                    rows = this._shouldRowSelfResize() ? this._maxRow : this.rowCount;
 
                 let styleRules = '';
                 let styleVars = {
@@ -270,10 +288,22 @@ Example:
             }
 
             ensureSpace(child) {
-                let minHeight = +child.getAttribute("row") + +child.getAttribute("height");
-                if(+this.rowCount === 0 && this.rowCount < minHeight) this.rowCount = minHeight;
-                let minWidth = +child.getAttribute("col") + +child.getAttribute("width");
-                if(+this.colCount === 0 && this.colCount < minWidth) this.colCount = minWidth;
+                if(this._shouldRowSelfResize()) {
+                    let minHeight = +child.getAttribute("row") + +child.getAttribute("height");
+                    if(this._maxRow < minHeight) this._maxRow = minHeight;
+                }
+                if(this._shouldColSelfResize()) {
+                    let minWidth = +child.getAttribute("col") + +child.getAttribute("width");
+                    if (this._maxCol < minWidth) this._maxCol = minWidth;
+                }
+            }
+
+            _shouldRowSelfResize() {
+                return +this.rowCount === 0;
+            }
+
+            _shouldColSelfResize() {
+                return +this.colCount === 0;
             }
 
             /**
@@ -469,8 +499,8 @@ Example:
                 // Min = 0.
                 // Max = grid size - player size.
                 return {
-                    col: Math.max(Math.min(position.col, +this.colCount === 0 ? Infinity : this.colCount - cols), 0),
-                    row: Math.max(Math.min(position.row, +this.rowCount === 0 ? Infinity : this.rowCount - rows), 0)
+                    col: Math.max(Math.min(position.col, this._shouldColSelfResize() ? Infinity : this.colCount - cols), 0),
+                    row: Math.max(Math.min(position.row, this._shouldRowSelfResize() ? Infinity : this.rowCount - rows), 0)
                 }
 
             }
@@ -493,8 +523,8 @@ Example:
                 // Min = 1.
                 // Max = grid size (or provided max)
                 return {
-                    width: Math.max(Math.min(size.width, +this.colCount === 0 ? Infinity : maxWidth), 1),
-                    height: Math.max(Math.min(size.height, +this.rowCount === 0 ? Infinity : maxHeight), 1)
+                    width: Math.max(Math.min(size.width, this._shouldColSelfResize() ? Infinity : maxWidth), 1),
+                    height: Math.max(Math.min(size.height, this._shouldRowSelfResize() ? Infinity : maxHeight), 1)
                 }
             }
 
