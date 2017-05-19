@@ -449,6 +449,10 @@ Example:
                         isLeft ? cols + col : this.colCount - col,
                         isTop ? rows + row : this.rowCount - row
                     );
+                    let maxWidth = parseInt(player.getAttribute('max-width')) || 9999;
+                    let minWidth = parseInt(player.getAttribute('min-width')) || 1;
+                    let maxHeight = parseInt(player.getAttribute('max-height')) || 9999;
+                    let minHeight = parseInt(player.getAttribute('min-height')) || 1;
                     player.style.transition = 'none';
                     isLeft && newWidth >= this.cellWidth && (player.style.left = `${newLeft}px`);
                     isTop && newHeight >= this.cellHeight && (player.style.top = `${newTop}px`);
@@ -456,7 +460,8 @@ Example:
                     isHeight && newHeight >= this.cellHeight && (player.style.height = `${newHeight}px`);
 
                     // Check for overlaps if enabled.
-                    if (this.overlappable || !this._isOverlapping(position.col, position.row, size.width, size.height, [player])) {
+                    if ((this.overlappable || !this._isOverlapping(position.col, position.row, size.width, size.height, [player])
+                        && this._isWithinConstraints(size.height, size.width, minHeight, maxHeight, minWidth, maxWidth))){
                         isTop && this.placeholder.setAttribute('row', position.row);
                         isLeft && this.placeholder.setAttribute('col', position.col);
                         isHeight && this.placeholder.setAttribute('height', size.height);
@@ -553,6 +558,21 @@ Example:
 
                 return overlap;
 
+            }
+            /**
+            * Checks if player is within its contraints
+            * @param {Number} height
+            * @param {Number} width
+            * @param {Number} minHeight
+            * @param {Number} maxHeight
+            * @param {Number} minWidth
+            * @param {Number} maxWidth
+            * @return {Boolean} true when within its constraints otherwise false
+            * @private
+            */
+            _isWithinConstraints(height, width, minHeight = 1, maxHeight = 9999, minWidth = 0, maxWidth = 9999) {
+                console.log(arguments)
+                return width >= minWidth && width <= maxWidth && height >= minHeight && height <= maxHeight
             }
 
             /**
