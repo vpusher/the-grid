@@ -238,6 +238,31 @@
 </div>
 
 <div class="vertical-section-container">
+    <h3>Auto-growing grid</h3>
+    <demo-snippet>
+        <template>
+            <style>
+                #grid6 tile {
+                    background-color: teal;
+                    opacity: 0.7;
+                }
+
+                #grid6 [placeholder] {
+                    background-color: lightgray;
+                }
+            </style>
+
+            <the-grid id="grid6" draggable row-autogrow col-autogrow cell-height="50" cell-width="50" cell-margin="5" col-count="3" row-count="3">
+                <tile class="tile" col="0" row="0" height="1" width="3" >⇥</tile>
+                <tile class="tile" col="1" row="2" height="1" width="1" >⤓</tile>
+                <div placeholder></div>
+            </the-grid>
+        </template>
+    </demo-snippet>
+</div>
+
+
+<div class="vertical-section-container">
     <h3>Emoji grid</h3>
     <demo-snippet>
         <template>
