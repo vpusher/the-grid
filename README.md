@@ -12,6 +12,7 @@ Features:
 * Resizable tiles
 * Overlappable tiles
 * Collision detection
+* Auto growing grid size
 * Mobile support
 
 Example:
@@ -166,6 +167,10 @@ Layout can be modified using the following attributes:
 * **col-count**: grid width as an amount of columns.
 * **row-count**: grid height as an amount of columns.
 
+> The number of columns `col-count` and number of rows `row-count` are by default fixed, and represents the grid size. Nevertheless, you can allow the grid
+> to auto increase its size with respectively `col-autogrow` and `row-autogrow` boolean attributes. This behavior occurs when a tile is resized or moved
+> while being on the edge of the grid.
+
 Also, you can allow tiles to overlap each other using `overlappable` attribute:
 
 ```html
@@ -244,6 +249,7 @@ Resize grippers can take the following values:
 
 ## History
 
+* **1.2.0:** Introduce autogrow feature.
 * **1.1.0:** Introduce overlappable feature.
 * **1.0.3:** Ability to generate grid's children with templates.
 * **1.0.2:** Fixes shadow dom wrapping.
