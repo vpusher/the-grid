@@ -12,76 +12,16 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../the-grid.html">
+    <link rel="import" href="grid-styles.html">
 
     <custom-style>
-        <style is="custom-style" include="demo-pages-shared-styles">
+        <style is="custom-style" include="demo-pages-shared-styles"></style>
+    </custom-style>
+
+    <custom-style>
+        <style is="custom-style" include="grid-styles">
             the-grid {
                 border: 1px solid #ddd;
-            }
-
-            the-grid [resize] {
-                position: absolute;
-            }
-
-            the-grid [resize="bottom-right"] {
-                bottom: 0;
-                right: 0;
-                cursor: nwse-resize;
-            }
-
-            the-grid [resize="bottom-left"] {
-                bottom: 0;
-                left: 0;
-                cursor: nesw-resize;
-            }
-
-            the-grid [resize="top-right"] {
-                top: 0;
-                right: 0;
-                cursor: nesw-resize;
-            }
-
-            the-grid [resize="top-left"] {
-                top: 0;
-                left: 0;
-                cursor: nwse-resize;
-            }
-
-            the-grid [resize="left"] {
-                top: 50%;
-                left: 0;
-                cursor: ew-resize;
-                margin-top: -10px;
-            }
-
-            the-grid [resize="top"] {
-                top: 0;
-                left: 0;
-                width: 100%;
-                text-align: center;
-                cursor: ns-resize;
-            }
-
-            the-grid [resize="right"] {
-                top: 50%;
-                right: 0;
-                cursor: ew-resize;
-                margin-top: -10px;
-            }
-
-            the-grid [resize="bottom"] {
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                text-align: center;
-                cursor: ns-resize;
-            }
-
-            the-grid tile {
-                box-sizing: border-box;
-                padding: 10px;
-                text-align: center;
-                color: white;
             }
         </style>
     </custom-style>
@@ -118,7 +58,6 @@
             <style>
                 #grid2 tile {
                     background-color: limegreen;
-                    opacity: 0.7;
                 }
 
                 #grid2 [placeholder] {
@@ -143,7 +82,6 @@
             <style>
                 #grid3 tile {
                     background-color: slateblue;
-                    opacity: 0.7;
                 }
 
                 #grid3 [placeholder] {
@@ -178,7 +116,6 @@
             <style>
                 #grid4 tile {
                     background-color: #cdcd51;
-                    opacity: 0.7;
                 }
 
                 #grid4 [placeholder] {
@@ -207,7 +144,6 @@
             <style>
                 #grid5 tile {
                     background-color: tomato;
-                    opacity: 0.7;
                 }
 
                 #grid5 [placeholder] {
@@ -216,12 +152,12 @@
             </style>
 
             <the-grid id="grid5" draggable resizable animated cell-height="80" cell-width="80" cell-margin="5" col-count="10" row-count="5">
-                <tile class="tile" col="0" row="0" height="5" width="1" >
+                <tile col="0" row="0" height="5" width="1" >
                 </tile>
-                <tile class="tile" col="3" row="3" height="1" width="1" >
+                <tile col="3" row="3" height="1" width="1" >
                     <span resize="bottom-right">┘</span>
                 </tile>
-                <tile class="tile" col="5" row="1" height="2" width="2" >
+                <tile col="5" row="1" height="2" width="2" >
                     <span resize="left">│</span>
                     <span resize="right">│</span>
                     <span resize="top">─</span>
@@ -244,7 +180,6 @@
             <style>
                 #grid6 tile {
                     background-color: teal;
-                    opacity: 0.7;
                 }
 
                 #grid6 [placeholder] {

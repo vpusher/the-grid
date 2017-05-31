@@ -1,6 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../the-grid.html">
 <link rel="import" href="../debug-grid.html">
+<link rel="import" href="grid-styles.html">
 
 <!--
 `<grid-wrapper>` is a container element that wraps <the-grid> for testing purpose and ensure its proper behavior when nested.
@@ -12,89 +13,9 @@ Example:
 
 <dom-module id="grid-wrapper">
     <template>
-        <style>
+        <style include="grid-styles">
             :host {
                 display: block;
-            }
-
-            the-grid .tile {
-                background: #ff4d43;
-                opacity: 0.9;
-                color: white;
-                cursor: move;
-                overflow: hidden;
-            }
-
-            the-grid [placeholder] {
-                background: #afafaf;
-            }
-
-            the-grid .tile > span {
-                position: absolute;
-            }
-
-            the-grid .tile > span:first-child {
-                top: 50%;
-                left: 50%;
-                margin-left: -15px;
-                margin-top: -25px;
-                font-size: 50px;
-            }
-
-            the-grid [resize="bottom-right"] {
-                bottom: 0;
-                right: 0;
-                cursor: nwse-resize;
-            }
-
-            the-grid [resize="bottom-left"] {
-                bottom: 0;
-                left: 0;
-                cursor: nesw-resize;
-            }
-
-            the-grid [resize="top-right"] {
-                top: 0;
-                right: 0;
-                cursor: nesw-resize;
-            }
-
-            the-grid [resize="top-left"] {
-                top: 0;
-                left: 0;
-                cursor: nwse-resize;
-            }
-
-            the-grid [resize="left"] {
-                top: 50%;
-                left: 0;
-                cursor: ew-resize;
-                margin-top: -10px;
-            }
-
-            the-grid [resize="top"] {
-                top: 0%;
-                width: 100%;
-                text-align: center;
-                cursor: ns-resize;
-            }
-
-            the-grid [resize="right"] {
-                top: 50%;
-                right: 0;
-                cursor: ew-resize;
-                margin-top: -10px;
-            }
-
-            the-grid [resize="bottom"] {
-                bottom: 0;
-                width: 100%;
-                text-align: center;
-                cursor: ns-resize;
-            }
-
-            dom-repeat {
-                display: none;
             }
         </style>
 
@@ -103,7 +24,7 @@ Example:
             <the-grid cell-height="{{cellHeight}}" cell-width="{{cellWidth}}" cell-margin="{{cellMargin}}" col-count="{{colCount}}" row-count="{{rowCount}}" overlappable col-autogrow row-autogrow draggable resizable animated>
                 <dom-repeat items="{{boxes}}">
                     <template>
-                        <div class="tile" col$="{{item.col}}" row$="{{item.row}}" height$="{{item.height}}" width$="{{item.width}}">
+                        <tile col$="{{item.col}}" row$="{{item.row}}" height$="{{item.height}}" width$="{{item.width}}">
                             <span>{{item.title}}</span>
                             <span resize="left">│</span>
                             <span resize="right">│</span>
@@ -113,7 +34,7 @@ Example:
                             <span resize="top-left">┌</span>
                             <span resize="bottom-right">┘</span>
                             <span resize="bottom-left">└</span>
-                        </div>
+                        </tile>
                     </template>
                 </dom-repeat>
                 <div placeholder></div>
