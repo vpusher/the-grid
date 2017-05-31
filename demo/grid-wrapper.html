@@ -99,8 +99,8 @@ Example:
         </style>
 
         <div id="container">
-            <debug-grid cell-height="100" cell-width="100" cell-margin="10" col-count="10" row-count="10"></debug-grid>
-            <the-grid draggable resizable animated cell-height="100" cell-width="100" col-count="10" row-count="10" cell-margin="10">
+            <debug-grid cell-height="{{cellHeight}}" cell-width="{{cellWidth}}" cell-margin="{{cellMargin}}" col-count="{{colCount}}" row-count="{{rowCount}}"></debug-grid>
+            <the-grid cell-height="{{cellHeight}}" cell-width="{{cellWidth}}" cell-margin="{{cellMargin}}" col-count="{{colCount}}" row-count="{{rowCount}}" overlappable col-autogrow row-autogrow draggable resizable animated>
                 <dom-repeat items="{{boxes}}">
                     <template>
                         <div class="tile" col$="{{item.col}}" row$="{{item.row}}" height$="{{item.height}}" width$="{{item.width}}">
@@ -143,6 +143,26 @@ Example:
                                 {title: '8', col: 5, row: 4, width: 1, height: 1},
                             ];
                         }
+                    },
+                    cellWidth: {
+                        type: Number,
+                        value: 100
+                    },
+                    cellHeight: {
+                        type: Number,
+                        value: 100
+                    },
+                    cellMargin: {
+                        type: Number,
+                        value: 10
+                    },
+                    rowCount: {
+                        type: Number,
+                        value: 10
+                    },
+                    colCount: {
+                        type: Number,
+                        value: 10
                     }
                 }
             }

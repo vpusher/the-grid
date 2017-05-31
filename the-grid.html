@@ -117,6 +117,26 @@ Example:
                     },
 
                     /**
+                     * Whether the grid columns count can increase or not (auto expand while dragging).
+                     * @type {Boolean}
+                     */
+                    colAutogrow: {
+                        type: Boolean,
+                        value: false,
+                        reflectToAttribute: true
+                    },
+
+                    /**
+                     * Whether the grid rows count can increase or not (auto expand while dragging).
+                     * @type {Boolean}
+                     */
+                    rowAutogrow: {
+                        type: Boolean,
+                        value: false,
+                        reflectToAttribute: true
+                    },
+
+                    /**
                      * Whether the moves and resizes are animated or not.
                      * @type {boolean}
                      */
@@ -156,7 +176,7 @@ Example:
                     overlappable: {
                         type: Boolean,
                         value: false,
-                        reflectToAttribute: true
+                        reflectToAttribute: true,
                     }
                 }
             }
@@ -170,10 +190,9 @@ Example:
 
             connectedCallback () {
                 super.connectedCallback();
-                this.computeStyles();
-
                 this.addEventListener('dom-change', this._attachEvents);
                 this._attachEvents();
+                this.computeStyles();
             }
 
             /**
@@ -281,6 +300,19 @@ Example:
             }
 
             /**
+             * Increase the grid size if the given tile is out of grid bounds.
+             * @param {Element} tile Tile to fit in the grid bounds.
+             */
+            ensureSpace(tile) {
+                if(this.rowAutogrow) {
+                    this.rowCount = Math.max(this.rowCount, +tile.getAttribute("row") + +tile.getAttribute("height"));
+                }
+                if(this.colAutogrow ) {
+                    this.colCount = Math.max(this.colCount, +tile.getAttribute("col") + +tile.getAttribute("width"));
+                }
+            }
+
+            /**
              * Process events related to a player being moved.
              * @private
              */
@@ -322,15 +354,16 @@ Example:
                     player.style.top = `${newTop}px`;
 
                     // Check for overlaps if enabled.
-                    if (this.overlappable || !this._isOverlapping(position.col, position.row, cols, rows, [player])){
+                    if (this.overlappable || !this._isOverlapping(position.col, position.row, cols, rows, [player])) {
                         this.placeholder.setAttribute('row', position.row);
                         this.placeholder.setAttribute('col', position.col);
+                        this.ensureSpace(this.placeholder);
                     }
                 }
 
                 if (state == 'end') {
                     player.setAttribute('row', this.placeholder.getAttribute('row'));
-                    player.setAttribute('col', this.placeholder.getAttribute('col'))
+                    player.setAttribute('col', this.placeholder.getAttribute('col'));
                     player.style.left = '';
                     player.style.top = '';
                     player.style.transition = '';
@@ -386,8 +419,8 @@ Example:
                     let newTop = top + e.detail.ddy;
                     let newWidth = width + (isLeft ? -e.detail.ddx : e.detail.ddx);
                     let newHeight = height + (isTop ? -e.detail.ddy : e.detail.ddy);
-                    let row = +player.getAttribute('row')
-                    let col = +player.getAttribute('col')
+                    let row = +player.getAttribute('row');
+                    let col = +player.getAttribute('col');
                     let cols = +player.getAttribute('width');
                     let rows = +player.getAttribute('height');
                     let position = this.getClosestPosition(newLeft, newTop, 1, 1, isTop || isLeft);
@@ -404,11 +437,12 @@ Example:
                     isHeight && newHeight >= this.cellHeight && (player.style.height = `${newHeight}px`);
 
                     // Check for overlaps if enabled.
-                    if (this.overlappable || !this._isOverlapping(position.col, position.row, size.width, size.height, [player])){
+                    if (this.overlappable || !this._isOverlapping(position.col, position.row, size.width, size.height, [player])) {
                         isTop && this.placeholder.setAttribute('row', position.row);
                         isLeft && this.placeholder.setAttribute('col', position.col);
                         isHeight && this.placeholder.setAttribute('height', size.height);
                         isWidth && this.placeholder.setAttribute('width', size.width);
+                        this.ensureSpace(this.placeholder);
                     }
                 }
 
@@ -524,8 +558,8 @@ Example:
                 // Min = 0.
                 // Max = grid size - player size.
                 return {
-                    col: Math.max(Math.min(position.col, this.colCount - cols), 0),
-                    row: Math.max(Math.min(position.row, this.rowCount - rows), 0)
+                    col: Math.max(Math.min(position.col, this.colAutogrow ? Infinity : this.colCount - cols), 0),
+                    row: Math.max(Math.min(position.row, this.rowAutogrow ? Infinity : this.rowCount - rows), 0)
                 }
 
             }
@@ -548,8 +582,8 @@ Example:
                 // Min = 1.
                 // Max = grid size (or provided max)
                 return {
-                    width: Math.max(Math.min(size.width, maxWidth), 1),
-                    height: Math.max(Math.min(size.height, maxHeight), 1)
+                    width: Math.max(Math.min(size.width, this.colAutogrow ? Infinity : maxWidth), 1),
+                    height: Math.max(Math.min(size.height, this.rowAutogrow ? Infinity : maxHeight), 1)
                 }
             }
 
