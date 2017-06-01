@@ -249,7 +249,7 @@ Resize grippers can take the following values:
 
 ## History
 
-* **1.2.0:** Introduce autogrow feature.
+* **1.2.0:** Introduce autogrow feature and custom events.
 * **1.1.0:** Introduce overlappable feature.
 * **1.0.3:** Ability to generate grid's children with templates.
 * **1.0.2:** Fixes shadow dom wrapping.

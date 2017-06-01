@@ -301,7 +301,7 @@ Example:
 
             /**
              * Increase the grid size if the given tile is out of grid bounds.
-             * @param {Element} tile Tile to fit in the grid bounds.
+             * @param {HTMLElement} tile Tile to fit in the grid bounds.
              */
             ensureSpace(tile) {
                 if(this.rowAutogrow) {
@@ -315,6 +315,7 @@ Example:
             /**
              * Process events related to a player being moved.
              * @private
+             * @fires TheGrid#move
              */
             _handleMove(e) {
                 let player = e.target,
@@ -370,7 +371,14 @@ Example:
                     player.style.zIndex = '';
                     this.placeholder.style.display = '';
 
-                    // Fire `move` event on drop.
+                    /**
+                     * `move` event when tile is dropped.
+                     *
+                     * @event TheGrid#move
+                     * @type {object}
+                     * @property {HTMLElement} grid - The grid in which the event occurred.
+                     * @property {HTMLElement} tile - The tile that has been moved.
+                     */
                     player.dispatchEvent(new CustomEvent('move', {
                         bubbles: true,
                         composed: true,
@@ -390,6 +398,7 @@ Example:
             /**
              * Process events related to a player being resized.
              * @private
+             * @fires TheGrid#resize
              */
             _handleResize(e) {
                 let player = this.getResizerHost(e.target),
@@ -474,6 +483,15 @@ Example:
                     this.placeholder.style.display = '';
 
                     // Fire `resize` event on drop.
+
+                    /**
+                     * `resize` event when resizer/gripper is dropped.
+                     *
+                     * @event TheGrid#resize
+                     * @type {object}
+                     * @property {HTMLElement} grid - The grid in which the event occurred.
+                     * @property {HTMLElement} tile - The tile that has been resized.
+                     */
                     player.dispatchEvent(new CustomEvent('resize', {
                         bubbles: true,
                         composed: true,
@@ -537,6 +555,11 @@ Example:
 
             }
 
+            /**
+             * Extract the position attributes (`row`, `col`) and size attributes (`width`, `height`) of the given tile element.
+             * @param {HTMLElement} tile Tile to read attributes from.
+             * @returns {{col: number, row: number, width: number, height: number}} The position and size of the given tile as raw object.
+             */
             getCoordinates(tile) {
                 return {
                     row:    +tile.getAttribute('row'),
