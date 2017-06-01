@@ -369,6 +369,16 @@ Example:
                     player.style.transition = '';
                     player.style.zIndex = '';
                     this.placeholder.style.display = '';
+
+                    // Fire `move` event on drop.
+                    player.dispatchEvent(new CustomEvent('move', {
+                        bubbles: true,
+                        composed: true,
+                        detail: {
+                            grid: this,
+                            tile: player
+                        }
+                    }));
                 }
 
                 this._safePreventDefault(e.detail.sourceEvent);
@@ -462,6 +472,16 @@ Example:
                     }, 500);
 
                     this.placeholder.style.display = '';
+
+                    // Fire `resize` event on drop.
+                    player.dispatchEvent(new CustomEvent('resize', {
+                        bubbles: true,
+                        composed: true,
+                        detail: {
+                            grid: this,
+                            tile: player
+                        }
+                    }));
                 }
 
                 this._safePreventDefault(e.detail.sourceEvent);
