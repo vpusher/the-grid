@@ -94,6 +94,30 @@ Example:
                         observer: 'computeStyles'
                     },
 
+                    minWidth: {
+                        type: Number,
+                        value: 1,
+                        reflectToAttribute: true
+                    },
+
+                    maxWidth: {
+                        type: Number,
+                        value: Infinity,
+                        reflectToAttribute: true
+                    },
+
+                    minHeight: {
+                        type: Number,
+                        value: 1,
+                        reflectToAttribute: true
+                    },
+
+                    maxHeight: {
+                        type: Number,
+                        value: Infinity,
+                        reflectToAttribute: true
+                    },
+
                     /**
                      * Defines the number of columns of the grid (its width in grid unit).
                      * @type {number}
@@ -449,10 +473,11 @@ Example:
                         isLeft ? cols + col : this.colCount - col,
                         isTop ? rows + row : this.rowCount - row
                     );
-                    let maxWidth = parseInt(player.getAttribute('max-width')) || 9999;
-                    let minWidth = parseInt(player.getAttribute('min-width')) || 1;
-                    let maxHeight = parseInt(player.getAttribute('max-height')) || 9999;
-                    let minHeight = parseInt(player.getAttribute('min-height')) || 1;
+                    let minWidth = parseInt(player.getAttribute('min-width')) || this.minWidth;
+                    let maxWidth = parseInt(player.getAttribute('max-width')) || this.maxWidth;
+                    let minHeight = parseInt(player.getAttribute('min-height')) || this.minHeight;
+                    let maxHeight = parseInt(player.getAttribute('max-height')) || this.maxHeight;
+
                     player.style.transition = 'none';
                     isLeft && newWidth >= this.cellWidth && (player.style.left = `${newLeft}px`);
                     isTop && newHeight >= this.cellHeight && (player.style.top = `${newTop}px`);
@@ -460,12 +485,13 @@ Example:
                     isHeight && newHeight >= this.cellHeight && (player.style.height = `${newHeight}px`);
 
                     // Check for overlaps if enabled.
-                    if ((this.overlappable || !this._isOverlapping(position.col, position.row, size.width, size.height, [player])
-                        && this._isWithinConstraints(size.height, size.width, minHeight, maxHeight, minWidth, maxWidth))){
-                        isTop && this.placeholder.setAttribute('row', position.row);
-                        isLeft && this.placeholder.setAttribute('col', position.col);
-                        isHeight && this.placeholder.setAttribute('height', size.height);
-                        isWidth && this.placeholder.setAttribute('width', size.width);
+                    if (this.overlappable || !this._isOverlapping(position.col, position.row, size.width, size.height, [player])) {
+                        let isWidthValid = this._isWithinConstraints(size.width, minWidth, maxWidth);
+                        let isHeightValid = this._isWithinConstraints(size.height, minHeight, maxHeight);
+                        isTop && isHeightValid && this.placeholder.setAttribute('row', position.row);
+                        isLeft && isWidthValid && this.placeholder.setAttribute('col', position.col);
+                        isWidth && isWidthValid && this.placeholder.setAttribute('width', size.width);
+                        isHeight && isHeightValid && this.placeholder.setAttribute('height', size.height);
                         this.ensureSpace(this.placeholder);
                     }
                 }
@@ -486,8 +512,6 @@ Example:
                     }, 500);
 
                     this.placeholder.style.display = '';
-
-                    // Fire `resize` event on drop.
 
                     /**
                      * `resize` event when resizer/gripper is dropped.
@@ -560,18 +584,15 @@ Example:
 
             }
             /**
-            * Checks if player is within its contraints
-            * @param {Number} height
-            * @param {Number} width
-            * @param {Number} minHeight
-            * @param {Number} maxHeight
-            * @param {Number} minWidth
-            * @param {Number} maxWidth
-            * @return {Boolean} true when within its constraints otherwise false
+            * Checks if the given width or height as `value` is within grid constraints.
+            * @param {Number} value in grid unit.
+            * @param {Number} min in grid unit.
+            * @param {Number} max in grid unit.
+            * @return {Boolean} true when within constraints, otherwise false.
             * @private
             */
-            _isWithinConstraints(height, width, minHeight = 1, maxHeight = 9999, minWidth = 0, maxWidth = 9999) {
-                return width >= minWidth && width <= maxWidth && height >= minHeight && height <= maxHeight
+            _isWithinConstraints(value, min = 1, max = Infinity) {
+                return value >= min && value <= max;
             }
 
             /**

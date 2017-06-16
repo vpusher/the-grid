@@ -12,6 +12,7 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../the-grid.html">
+    <link rel="import" href="../debug-grid.html">
     <link rel="import" href="grid-styles.html">
 
     <custom-style>
@@ -22,6 +23,10 @@
         <style is="custom-style" include="grid-styles">
             the-grid {
                 border: 1px solid #ddd;
+            }
+
+            debug-grid {
+                left: 44px;
             }
         </style>
     </custom-style>
@@ -90,11 +95,11 @@
             </style>
 
             <the-grid id="grid3" resizable cell-height="100" cell-width="100" cell-margin="5" col-count="8" row-count="5">
-                <tile col="2" row="0" height="1" width="4" max-width="4" min-width="2">
+                <tile col="2" row="0" height="1" width="4">
                     Resize me
                     <span resize="right">│</span>
                 </tile>
-                <tile col="0" row="1" height="3" width="2" max-height="4" min-height="2">
+                <tile col="0" row="1" height="3" width="2">
                     <span resize="bottom-right">┘</span>
                 </tile>
                 <tile col="5" row="2" height="2" width="2" >
@@ -188,10 +193,43 @@
             </style>
 
             <the-grid id="grid6" draggable row-autogrow col-autogrow cell-height="50" cell-width="50" cell-margin="5" col-count="3" row-count="3">
-                <tile class="tile" col="0" row="0" height="1" width="3" >⇥</tile>
-                <tile class="tile" col="1" row="2" height="1" width="1" >⤓</tile>
+                <tile col="0" row="0" height="1" width="3" >⇥</tile>
+                <tile col="1" row="2" height="1" width="1" >⤓</tile>
                 <div placeholder></div>
             </the-grid>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container">
+    <h3>Min/Max constraints on grid tiles</h3>
+    <demo-snippet>
+        <template>
+            <style>
+                #grid7 tile {
+                    background-color: plum;
+                }
+
+                #grid7 [placeholder] {
+                    background-color: lightgray;
+                }
+            </style>
+            <the-grid id="grid7" min-height="2" max-height="5" draggable resizable cell-height="40" cell-width="40" cell-margin="0" col-count="10" row-count="10">
+                <tile col="5" row="5" height="3" width="4" max-width="4">
+                    Min: 1 x 2<br/>
+                    Max: 4 x 5
+                    <span resize="top-left">┌</span>
+                    <span resize="bottom-right">┘</span>
+                </tile>
+                <tile col="1" row="2" height="2" width="2" min-width="2">
+                    Min: 2 x 2<br/>
+                    Max: 10 x 5
+                    <span resize="top-left">┌</span>
+                    <span resize="bottom-right">┘</span>
+                </tile>
+                <div placeholder></div>
+            </the-grid>
+            <debug-grid cell-height="40" cell-width="40" cell-margin="0" col-count="10" row-count="10"></debug-grid>
         </template>
     </demo-snippet>
 </div>
