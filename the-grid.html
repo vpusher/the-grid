@@ -216,7 +216,6 @@ Example:
                 super.connectedCallback();
                 this.addEventListener('dom-change', this._attachEvents);
                 this._attachEvents();
-                this.computeStyles();
             }
 
             /**
@@ -230,6 +229,7 @@ Example:
                 let addOrRemoveMoveListener = this.draggable ? 'addListener' : 'removeListener';
 
                 Array.prototype.forEach.call(this.children, child => {
+                    this.ensureSpace(child);
                     let isPlaceholder = child.hasAttribute('placeholder');
                     if (isPlaceholder) {
                         this.placeholder = child;
@@ -248,7 +248,7 @@ Example:
                         child.addEventListener('touchmove', this._safePreventDefault);
                     }
                 });
-
+                this.computeStyles();
             }
 
             /**
@@ -384,6 +384,25 @@ Example:
                         this.placeholder.setAttribute('col', position.col);
                         this.ensureSpace(this.placeholder);
                     }
+
+                    /**
+                     * `dragging` event when resizer/gripper is being moved.
+                     *
+                     * @event TheGrid#dragging
+                     * @type {object}
+                     * @property {HTMLElement} grid - The grid in which the event occurred.
+                     * @property {HTMLElement} tile - The tile that has been resized.
+                     * @property {Event} sourceEvent - The original tracking event.
+                     */
+                    player.dispatchEvent(new CustomEvent('dragging', {
+                        bubbles: true,
+                        composed: true,
+                        detail: {
+                            grid: this,
+                            tile: player,
+                            sourceEvent: e
+                        }
+                    }));
                 }
 
                 if (state == 'end') {
