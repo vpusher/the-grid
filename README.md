@@ -10,6 +10,10 @@ Features:
 
 * Draggable tiles
 * Resizable tiles
+* Overlappable tiles
+* Collision detection
+* Auto growing grid size
+* Constraints on tile size
 * Mobile support
 
 Example:
@@ -164,6 +168,16 @@ Layout can be modified using the following attributes:
 * **col-count**: grid width as an amount of columns.
 * **row-count**: grid height as an amount of columns.
 
+> The number of columns `col-count` and number of rows `row-count` are by default fixed, and represents the grid size. Nevertheless, you can allow the grid
+> to auto increase its size with respectively `col-autogrow` and `row-autogrow` boolean attributes. This behavior occurs when a tile is resized or moved
+> while being on the edge of the grid.
+
+Also, you can allow tiles to overlap each other using `overlappable` attribute:
+
+```html
+<the-grid overlappable></the-grid>
+```
+
 ### The grid's children (akka tiles).
 
 Each direct child of `<the-grid>` will be considered as a grid tile that can be moved or resized depending on the grid properties.
@@ -224,7 +238,7 @@ Resize grippers can take the following values:
 * **bottom-left**: resize the tile by the bottom and left edges at the same time.
 * **bottom-right**: resize the tile by the bottom and right edges at the same time.
 
-> Several grippers can be used for the same tile.
+> Several grippers can be used for the same tile. They can be nested wherever in the tile element.
 
 ## Contributing
 
@@ -236,10 +250,13 @@ Resize grippers can take the following values:
 
 ## History
 
-* **1.0.3:** ability to generate grid's children with templates.
-* **1.0.2:** fixes shadow dom wrapping.
-* **1.0.1:** enhanced mobile support.
-* **1.0.0:** initial release.
+* **1.3.0:** Ability to add constraints on tile size as min/max width and height.
+* **1.2.0:** Introduce autogrow feature and custom events.
+* **1.1.0:** Introduce overlappable feature.
+* **1.0.3:** Ability to generate grid's children with templates.
+* **1.0.2:** Fixes shadow dom wrapping.
+* **1.0.1:** Enhanced mobile support.
+* **1.0.0:** Initial release.
 
 ## License
 

@@ -12,76 +12,21 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../the-grid.html">
+    <link rel="import" href="../debug-grid.html">
+    <link rel="import" href="grid-styles.html">
 
     <custom-style>
-        <style is="custom-style" include="demo-pages-shared-styles">
+        <style is="custom-style" include="demo-pages-shared-styles"></style>
+    </custom-style>
+
+    <custom-style>
+        <style is="custom-style" include="grid-styles">
             the-grid {
                 border: 1px solid #ddd;
             }
 
-            the-grid [resize] {
-                position: absolute;
-            }
-
-            the-grid [resize="bottom-right"] {
-                bottom: 0;
-                right: 0;
-                cursor: nwse-resize;
-            }
-
-            the-grid [resize="bottom-left"] {
-                bottom: 0;
-                left: 0;
-                cursor: nesw-resize;
-            }
-
-            the-grid [resize="top-right"] {
-                top: 0;
-                right: 0;
-                cursor: nesw-resize;
-            }
-
-            the-grid [resize="top-left"] {
-                top: 0;
-                left: 0;
-                cursor: nwse-resize;
-            }
-
-            the-grid [resize="left"] {
-                top: 50%;
-                left: 0;
-                cursor: ew-resize;
-                margin-top: -10px;
-            }
-
-            the-grid [resize="top"] {
-                top: 0;
-                left: 0;
-                width: 100%;
-                text-align: center;
-                cursor: ns-resize;
-            }
-
-            the-grid [resize="right"] {
-                top: 50%;
-                right: 0;
-                cursor: ew-resize;
-                margin-top: -10px;
-            }
-
-            the-grid [resize="bottom"] {
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                text-align: center;
-                cursor: ns-resize;
-            }
-
-            the-grid tile {
-                box-sizing: border-box;
-                padding: 10px;
-                text-align: center;
-                color: white;
+            debug-grid {
+                left: 44px;
             }
         </style>
     </custom-style>
@@ -118,7 +63,6 @@
             <style>
                 #grid2 tile {
                     background-color: limegreen;
-                    opacity: 0.7;
                 }
 
                 #grid2 [placeholder] {
@@ -128,7 +72,7 @@
 
             <the-grid id="grid2" draggable cell-height="75" cell-width="75" cell-margin="5" col-count="10" row-count="5">
                 <tile col="1" row="1" height="1" width="1">Drag me</tile>
-                <tile col="4" row="5" height="2" width="1"></tile>
+                <tile col="5" row="0" height="2" width="1"></tile>
                 <tile col="2" row="3" height="2" width="2"></tile>
                 <div placeholder></div>
             </the-grid>
@@ -143,7 +87,6 @@
             <style>
                 #grid3 tile {
                     background-color: slateblue;
-                    opacity: 0.7;
                 }
 
                 #grid3 [placeholder] {
@@ -152,11 +95,11 @@
             </style>
 
             <the-grid id="grid3" resizable cell-height="100" cell-width="100" cell-margin="5" col-count="8" row-count="5">
-                <tile col="2" row="0" height="1" width="4" >
+                <tile col="2" row="0" height="1" width="4">
                     Resize me
                     <span resize="right">│</span>
                 </tile>
-                <tile col="0" row="1" height="3" width="2" >
+                <tile col="0" row="1" height="3" width="2">
                     <span resize="bottom-right">┘</span>
                 </tile>
                 <tile col="5" row="2" height="2" width="2" >
@@ -172,13 +115,12 @@
 </div>
 
 <div class="vertical-section-container">
-    <h3>Animated grid (smooth moves and resizes)</h3>
+    <h3>Overlappable tiles grid</h3>
     <demo-snippet>
         <template>
             <style>
                 #grid4 tile {
-                    background-color: tomato;
-                    opacity: 0.7;
+                    background-color: #cdcd51;
                 }
 
                 #grid4 [placeholder] {
@@ -186,13 +128,41 @@
                 }
             </style>
 
-            <the-grid id="grid4" draggable resizable animated cell-height="80" cell-width="80" cell-margin="5" col-count="10" row-count="5">
-                <tile class="tile" col="0" row="0" height="5" width="1" >
+            <the-grid id="grid4" overlappable draggable cell-height="100" cell-width="100" cell-margin="5" col-count="8" row-count="5">
+                <tile col="5" row="1" height="3" width="2" >
                 </tile>
-                <tile class="tile" col="3" row="3" height="1" width="1" >
+                <tile col="3" row="1" height="3" width="2" >
+                </tile>
+                <tile col="1" row="1" height="3" width="2" >
+                    Stack me
+                </tile>
+                <div placeholder></div>
+            </the-grid>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container">
+    <h3>Animated grid (smooth moves and resizes)</h3>
+    <demo-snippet>
+        <template>
+            <style>
+                #grid5 tile {
+                    background-color: tomato;
+                }
+
+                #grid5 [placeholder] {
+                    background-color: lightgray;
+                }
+            </style>
+
+            <the-grid id="grid5" draggable resizable animated cell-height="80" cell-width="80" cell-margin="5" col-count="10" row-count="5">
+                <tile col="0" row="0" height="5" width="1" >
+                </tile>
+                <tile col="3" row="3" height="1" width="1" >
                     <span resize="bottom-right">┘</span>
                 </tile>
-                <tile class="tile" col="5" row="1" height="2" width="2" >
+                <tile col="5" row="1" height="2" width="2" >
                     <span resize="left">│</span>
                     <span resize="right">│</span>
                     <span resize="top">─</span>
@@ -207,6 +177,63 @@
         </template>
     </demo-snippet>
 </div>
+
+<div class="vertical-section-container">
+    <h3>Auto-growing grid</h3>
+    <demo-snippet>
+        <template>
+            <style>
+                #grid6 tile {
+                    background-color: teal;
+                }
+
+                #grid6 [placeholder] {
+                    background-color: lightgray;
+                }
+            </style>
+
+            <the-grid id="grid6" draggable row-autogrow col-autogrow cell-height="50" cell-width="50" cell-margin="5" col-count="3" row-count="3">
+                <tile col="0" row="0" height="1" width="3" >⇥</tile>
+                <tile col="1" row="2" height="1" width="1" >⤓</tile>
+                <div placeholder></div>
+            </the-grid>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container">
+    <h3>Min/Max constraints on tile's size</h3>
+    <demo-snippet>
+        <template>
+            <style>
+                #grid7 tile {
+                    background-color: plum;
+                }
+
+                #grid7 [placeholder] {
+                    background-color: lightgray;
+                }
+            </style>
+            <the-grid id="grid7" min-height="2" max-height="5" draggable resizable cell-height="40" cell-width="40" cell-margin="0" col-count="10" row-count="10">
+                <tile col="5" row="5" height="3" width="4" max-width="4">
+                    Min: 1 x 2<br/>
+                    Max: 4 x 5
+                    <span resize="top-left">┌</span>
+                    <span resize="bottom-right">┘</span>
+                </tile>
+                <tile col="1" row="2" height="2" width="2" min-width="2">
+                    Min: 2 x 2<br/>
+                    Max: 10 x 5
+                    <span resize="top-left">┌</span>
+                    <span resize="bottom-right">┘</span>
+                </tile>
+                <div placeholder></div>
+            </the-grid>
+            <debug-grid cell-height="40" cell-width="40" cell-margin="0" col-count="10" row-count="10"></debug-grid>
+        </template>
+    </demo-snippet>
+</div>
+
 
 <div class="vertical-section-container">
     <h3>Emoji grid</h3>

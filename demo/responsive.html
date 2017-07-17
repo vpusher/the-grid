@@ -1,0 +1,65 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>Grid Playground</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../the-grid.html">
+    <link rel="import" href="grid-styles.html">
+
+    <custom-style>
+        <style is="custom-style" include="grid-styles">
+            body {
+                margin: 0;
+            }
+
+            the-grid tile > span:not([resize]) {
+                font-size: 4vw;
+            }
+        </style>
+    </custom-style>
+</head>
+<body>
+<dom-bind>
+    <template>
+        <!-- Here is a grid which always fit the window size -->
+        <the-grid cell-height="{{cellHeight}}" cell-width="{{cellWidth}}" col-count="{{colCount}}" row-count="{{rowCount}}" cell-margin="{{cellMargin}}">
+            <tile col="0" row="0" height="7" width="1">
+                <span>Left</span>
+            </tile>
+            <tile col="1" row="0" height="5" width="2">
+                <span>Center</span>
+            </tile>
+            <tile col="3" row="0" height="7" width="1">
+                <span>Right</span>
+            </tile>
+        </the-grid>
+    </template>
+</dom-bind>
+
+<script>
+    let autobind = document.querySelector('dom-bind');
+
+    // The grid will always keeps its margin, columns and rows counts unchanged.
+    autobind.cellMargin = 10;
+    autobind.colCount = 4;
+    autobind.rowCount = 8;
+
+    // However the cell height and width will be updated so the entire grid fit the window.
+    function update() {
+        autobind.cellHeight = (window.innerHeight - autobind.cellMargin * ( autobind.rowCount - 1)) / autobind.rowCount;
+        autobind.cellWidth = (window.innerWidth - autobind.cellMargin * ( autobind.colCount - 1)) / autobind.colCount;
+    }
+
+    window.addEventListener('resize', update);
+
+    update();
+</script>
+
+</body>
+</html>
