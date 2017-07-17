@@ -13,6 +13,7 @@ Features:
 * Overlappable tiles
 * Collision detection
 * Auto growing grid size
+* Constraints on tile size
 * Mobile support
 
 Example:
@@ -249,7 +250,8 @@ Resize grippers can take the following values:
 
 ## History
 
-* **1.2.0:** Introduce autogrow feature.
+* **1.3.0:** Ability to add constraints on tile size as min/max width and height.
+* **1.2.0:** Introduce autogrow feature and custom events.
 * **1.1.0:** Introduce overlappable feature.
 * **1.0.3:** Ability to generate grid's children with templates.
 * **1.0.2:** Fixes shadow dom wrapping.

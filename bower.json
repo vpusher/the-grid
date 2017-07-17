@@ -1,7 +1,7 @@
 {
   "name": "the-grid",
   "description": "Grid layout with drag'n'drop and resize capabilities.",
-  "version": "1.1.0",
+  "version": "1.3.0",
   "main": "the-grid.html",
   "keywords": [
     "grid",
