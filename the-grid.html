@@ -431,7 +431,8 @@ Example:
                         composed: true,
                         detail: {
                             grid: this,
-                            tile: player
+                            tile: player,
+                            type: "move"
                         }
                     }));
                 }
@@ -506,6 +507,32 @@ Example:
                     isTop && newHeight >= this.cellHeight && (player.style.top = `${newTop}px`);
                     isWidth && newWidth >= this.cellWidth && (player.style.width = `${newWidth}px`);
                     isHeight && newHeight >= this.cellHeight && (player.style.height = `${newHeight}px`);
+
+                    if(size.width !== +this.placeholder.getAttribute("width")
+                        || position.height !== +this.placeholder.getAttribute("height")) {
+                        /**
+                         * `dragging` event when resizer/gripper is being moved.
+                         *
+                         * @event TheGrid#dragging
+                         * @type {object}
+                         * @property {HTMLElement} grid - The grid in which the event occurred.
+                         * @property {HTMLElement} tile - The tile that has been resized.
+                         * @property {Event} sourceEvent - The original tracking event.
+                         */
+                        player.dispatchEvent(new CustomEvent('dragging', {
+                            bubbles: true,
+                            composed: true,
+                            detail: {
+                                grid: this,
+                                tile: player,
+                                type: "resize",
+                                col: size.col,
+                                row: size.row,
+                                width: size.width,
+                                height: size.height
+                            }
+                        }));
+                    }
 
                     // Check for overlaps if enabled.
                     if (this.overlappable || !this._isOverlapping(position.col, position.row, size.width, size.height, [player])) {
