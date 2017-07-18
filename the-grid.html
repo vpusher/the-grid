@@ -216,7 +216,6 @@ Example:
                 super.connectedCallback();
                 this.addEventListener('dom-change', this._attachEvents);
                 this._attachEvents();
-                this.computeStyles();
             }
 
             /**
@@ -230,6 +229,7 @@ Example:
                 let addOrRemoveMoveListener = this.draggable ? 'addListener' : 'removeListener';
 
                 Array.prototype.forEach.call(this.children, child => {
+                    this.ensureSpace(child);
                     let isPlaceholder = child.hasAttribute('placeholder');
                     if (isPlaceholder) {
                         this.placeholder = child;
@@ -248,7 +248,7 @@ Example:
                         child.addEventListener('touchmove', this._safePreventDefault);
                     }
                 });
-
+                this.computeStyles();
             }
 
             /**
@@ -378,6 +378,30 @@ Example:
                     player.style.left = `${newLeft}px`;
                     player.style.top = `${newTop}px`;
 
+                    if(position.col !== +this.placeholder.getAttribute("col")
+                        || position.row !== +this.placeholder.getAttribute("row")) {
+                        /**
+                         * `dragging` event when resizer/gripper is being moved.
+                         *
+                         * @event TheGrid#dragging
+                         * @type {object}
+                         * @property {HTMLElement} grid - The grid in which the event occurred.
+                         * @property {HTMLElement} tile - The tile that has been resized.
+                         * @property {Event} sourceEvent - The original tracking event.
+                         */
+                        player.dispatchEvent(new CustomEvent('dragging', {
+                            bubbles: true,
+                            composed: true,
+                            detail: {
+                                grid: this,
+                                tile: player,
+                                col: position.col,
+                                row: position.row,
+                                sourceEvent: e
+                            }
+                        }));
+                    }
+
                     // Check for overlaps if enabled.
                     if (this.overlappable || !this._isOverlapping(position.col, position.row, cols, rows, [player])) {
                         this.placeholder.setAttribute('row', position.row);
@@ -408,7 +432,8 @@ Example:
                         composed: true,
                         detail: {
                             grid: this,
-                            tile: player
+                            tile: player,
+                            type: "move"
                         }
                     }));
                 }
@@ -483,6 +508,33 @@ Example:
                     isTop && newHeight >= this.cellHeight && (player.style.top = `${newTop}px`);
                     isWidth && newWidth >= this.cellWidth && (player.style.width = `${newWidth}px`);
                     isHeight && newHeight >= this.cellHeight && (player.style.height = `${newHeight}px`);
+
+                    if(size.width !== +this.placeholder.getAttribute("width")
+                        || position.height !== +this.placeholder.getAttribute("height")) {
+                        /**
+                         * `dragging` event when resizer/gripper is being moved.
+                         *
+                         * @event TheGrid#dragging
+                         * @type {object}
+                         * @property {HTMLElement} grid - The grid in which the event occurred.
+                         * @property {HTMLElement} tile - The tile that has been resized.
+                         * @property {Event} sourceEvent - The original tracking event.
+                         */
+                        player.dispatchEvent(new CustomEvent('dragging', {
+                            bubbles: true,
+                            composed: true,
+                            detail: {
+                                grid: this,
+                                tile: player,
+                                type: "resize",
+                                col: size.col,
+                                row: size.row,
+                                width: size.width,
+                                height: size.height,
+                                sourceEvent: e
+                            }
+                        }));
+                    }
 
                     // Check for overlaps if enabled.
                     if (this.overlappable || !this._isOverlapping(position.col, position.row, size.width, size.height, [player])) {
@@ -584,13 +636,13 @@ Example:
 
             }
             /**
-            * Checks if the given width or height as `value` is within grid constraints.
-            * @param {Number} value in grid unit.
-            * @param {Number} min in grid unit.
-            * @param {Number} max in grid unit.
-            * @return {Boolean} true when within constraints, otherwise false.
-            * @private
-            */
+             * Checks if the given width or height as `value` is within grid constraints.
+             * @param {Number} value in grid unit.
+             * @param {Number} min in grid unit.
+             * @param {Number} max in grid unit.
+             * @return {Boolean} true when within constraints, otherwise false.
+             * @private
+             */
             _isWithinConstraints(value, min = 1, max = Infinity) {
                 return value >= min && value <= max;
             }
