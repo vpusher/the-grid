@@ -685,6 +685,23 @@ Example:
                 return current !== this && current !== resizer ? current : undefined;
             }
 
+            /**
+             * Output as JSON array the current positions and sizes of all tiles.
+             * Represents the serialized state of the grid.
+             *
+             * @returns {Array<{col: Number, row: Number, width: Number, height: Number}>} Array of tile's coordinates (position and size) objects.
+             */
+            serialize() {
+                return Array.from(this.children).map(child => {
+                    return {
+                        col: child.getAttribute("col"),
+                        row: child.getAttribute("row"),
+                        width: child.getAttribute("width"),
+                        height: child.getAttribute("height")
+                    }
+                });
+            }
+
         }
 
         customElements.define(TheGrid.is, TheGrid);
