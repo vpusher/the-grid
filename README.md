@@ -250,6 +250,7 @@ Resize grippers can take the following values:
 
 ## History
 
+* **1.4.0:** Now handles children added on the fly + Serialization helper.
 * **1.3.0:** Ability to add constraints on tile size as min/max width and height.
 * **1.2.0:** Introduce autogrow feature and custom events.
 * **1.1.0:** Introduce overlappable feature.
