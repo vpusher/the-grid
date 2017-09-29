@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/lib/mixins/gesture-event-listeners.html">
 
 <!--
 `<the-grid>` is a grid layout element width drag n drop and resize capabilities.
@@ -7,7 +8,9 @@ Example:
 
     <the-grid cell-height="150" cell-width="150" cell-margin="10"></the-grid>
 
-@demo demo/index.html
+@demo demo/index.html Demos
+@demo demo/playground.html Playground
+@demo demo/responsive.html Responsiveness
 -->
 
 <dom-module id="the-grid">
@@ -179,7 +182,7 @@ Example:
                         type: Boolean,
                         value: false,
                         reflectToAttribute: true,
-                        observer: '_attachEvents'
+                        observer: '_upgradeEvents'
                     },
 
                     /**
@@ -190,7 +193,7 @@ Example:
                         type: Boolean,
                         value: false,
                         reflectToAttribute: true,
-                        observer: '_attachEvents'
+                        observer: '_upgradeEvents'
                     },
 
                     /**
@@ -210,45 +213,103 @@ Example:
              */
             constructor() {
                 super();
+
+                // Create the mutation observer instance.
+                const observer = new MutationObserver(mutations => {
+                    mutations.forEach(mutation => {
+                        this._upgradeEvents(mutation);
+                        console.log(mutation);
+                    });
+                });
+
+                // Configuration of the observer: only listen for children changes.
+                const config = { childList: true };
+
+                // The observed target is the grid element itself.
+                observer.observe(this, config);
             }
 
             connectedCallback () {
                 super.connectedCallback();
-                this.addEventListener('dom-change', this._attachEvents);
-                this._attachEvents();
                 this.computeStyles();
             }
 
             /**
-             * Adds and removes tracking events depending on the `resizable` and `draggable` properties.
+             * Handle event attachment when a mutation occurs. If call without any mutation update all current tiles/children.
+             * @param {MutationRecord} [record] Mutation record holding the added or removed nodes.
              * @private
              */
-            _attachEvents() {
-                let moveHandler = this._handleMoveFn = this._handleMoveFn || this._handleMove.bind(this);
-                let resizeHandler = this._handleResizeFn = this._handleResizeFn || this._handleResize.bind(this);
-                let addOrRemoveResizeListener = this.resizable ? 'addListener' : 'removeListener';
-                let addOrRemoveMoveListener = this.draggable ? 'addListener' : 'removeListener';
+            _upgradeEvents(record) {
+                // Only update given nodes from the mutation.
+                if (record instanceof MutationRecord) {
+                    Array.from(record.addedNodes).forEach(node => {
+                        if (node instanceof HTMLElement) {
+                            this._toggleEvents(node, false);
+                        }
+                    });
+                    Array.from(record.removedNodes).forEach(node => {
+                        if (node instanceof HTMLElement) {
+                            this._toggleEvents(node, true);
+                        }
+                    });
+                // Update all nodes (no arg).
+                } else {
+                    Array.from(this.children).forEach(child => {
+                        this._toggleEvents(child, false);
+                    });
+                }
+            }
 
-                Array.prototype.forEach.call(this.children, child => {
-                    let isPlaceholder = child.hasAttribute('placeholder');
-                    if (isPlaceholder) {
-                        this.placeholder = child;
-                    } else {
-                        let resizers = child.querySelectorAll('[resize]') || [];
+            /**
+             * Adds and removes tracking events depending on the `resizable` and `draggable` properties.
+             * @param {HTMLElement} node Node to add/remove listener on.
+             * @param {Boolean} removed Whether the node has been removed or added.
+             * @private
+             */
+            _toggleEvents(node, removed) {
+                const moveHandler = this._handleMoveFn = this._handleMoveFn || this._handleMove.bind(this);
+                const resizeHandler = this._handleResizeFn = this._handleResizeFn || this._handleResize.bind(this);
 
-                        Array.prototype.forEach.call(resizers, resizer => {
-                            Polymer.Gestures[addOrRemoveResizeListener](resizer, 'track', resizeHandler);
-                        });
+                const addOrRemoveResizeListener = this.resizable && !removed;
+                const addOrRemoveMoveListener = this.draggable && !removed;
+                const addOrRemoveNativeListener = !removed;
 
-                        Polymer.Gestures[addOrRemoveMoveListener](child, 'track', moveHandler);
+                const  isPlaceholder = node.hasAttribute('placeholder');
 
-                        // We need this dirty prevent default since 'track' gestures
-                        // - let pass some events before triggering the 'start' state.
-                        // - does not allow access to the real source event on touch devices.
-                        child.addEventListener('touchmove', this._safePreventDefault);
+                if (isPlaceholder && !removed) {
+                    this.placeholder = node;
+                } else {
+                    const resizers = node.querySelectorAll('[resize]') || [];
+
+                    Array.from(resizers).forEach(resizer => {
+                        if (addOrRemoveResizeListener && !resizer._hasResizeListener) {
+                            Polymer.Gestures.addListener(resizer, 'track', resizeHandler);
+                            resizer._hasResizeListener = true;
+                        } else if (!addOrRemoveResizeListener) {
+                            Polymer.Gestures.removeListener(resizer, 'track', resizeHandler);
+                            resizer._hasResizeListener = false;
+                        }
+                    });
+
+                    if (addOrRemoveMoveListener && !node._hasMoveListener) {
+                        Polymer.Gestures.addListener(node, 'track', moveHandler);
+                        node._hasMoveListener = true;
+                    } else if (!addOrRemoveMoveListener) {
+                        Polymer.Gestures.removeListener(node, 'track', moveHandler);
+                        node._hasMoveListener = false;
                     }
-                });
 
+                    // We need this dirty prevent default since 'track' gestures
+                    // - let pass some events before triggering the 'start' state.
+                    // - does not allow access to the real source event on touch devices.
+                    if (addOrRemoveNativeListener && !node._hasNativeMoveListener) {
+                        node.addEventListener('touchmove', this._safePreventDefault);
+                        node._hasNativeMoveListener = true;
+                    } else if (!addOrRemoveNativeListener) {
+                        node.removeEventListener('touchmove', this._safePreventDefault);
+                        node._hasNativeMoveListener = false;
+                    }
+                }
             }
 
             /**
