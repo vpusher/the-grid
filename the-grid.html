@@ -346,7 +346,16 @@ Example:
                     state = e.detail.state;
 
                 // Only handle direct children of the grid.
-                if (Polymer.dom(player).parentNode !== this) return;
+                //If the event does not come from a direct child find the right child and use it as target
+                if (Polymer.dom(player).parentNode !== this) {
+                    e.path.forEach(item => {
+                        if(Polymer.dom(item).parentNode === that) {
+                            player = item;
+                        }
+                    });
+                    //Well it defintly wasn´t a child so stop this!
+                    if (Polymer.dom(player).parentNode !== this) return;
+                }
 
                 // Create a placeholder if not present.
                 if (!this.placeholder) {
