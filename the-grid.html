@@ -215,12 +215,8 @@ Example:
                 super();
 
                 // Create the mutation observer instance.
-                const observer = new MutationObserver(mutations => {
-                    mutations.forEach(mutation => {
-                        this._upgradeEvents(mutation);
-                        console.log(mutation);
-                    });
-                });
+                const observer = new MutationObserver(mutations => 
+                  mutations.forEach(mutation => this._upgradeEvents(mutation)));
 
                 // Configuration of the observer: only listen for children changes.
                 const config = { childList: true };
