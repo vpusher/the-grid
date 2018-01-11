@@ -237,7 +237,6 @@ Example:
                 const observer = new MutationObserver(mutations => {
                     mutations.forEach(mutation => {
                         this._upgradeEvents(mutation);
-                        console.log(mutation);
                         if(firstTime) {
                             firstTime = false;
                             this.dispatchEvent(new CustomEvent('initialized', {
