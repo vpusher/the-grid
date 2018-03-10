@@ -749,14 +749,16 @@ Example:
              * @returns {Array<{col: Number, row: Number, width: Number, height: Number}>} Array of tile's coordinates (position and size) objects.
              */
             serialize() {
-                return Array.from(this.children).map(child => {
-                    return {
-                        col: child.getAttribute("col"),
-                        row: child.getAttribute("row"),
-                        width: child.getAttribute("width"),
-                        height: child.getAttribute("height")
-                    }
-                });
+                return Array.from(this.children)
+                    .filter((element) => !element.hasAttribute('placeholder'))
+                    .map(child => {
+                        return {
+                            col: child.getAttribute("col"),
+                            row: child.getAttribute("row"),
+                            width: child.getAttribute("width"),
+                            height: child.getAttribute("height")
+                        }
+                    });
             }
 
         }
