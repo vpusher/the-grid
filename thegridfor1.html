@@ -32,7 +32,7 @@ Example:
                         height: var(--the-grid-height);
                     }
         
-                    #container > ::content(*) {
+                    #container > ::content * {
                         display: block;
                         position: absolute;
                         transition: var(--the-grid-move-animation-transition);
@@ -44,7 +44,7 @@ Example:
                                           supported by Chrome and Opera */
                     }
         
-                    #container > ::content([placeholder]) {
+                    #container > ::content [placeholder] {
                         display: none;
                         transition: none;
                     }
@@ -229,10 +229,6 @@ Example:
                 observer.observe(this, config);
             },
 
-            attached () {
-                this.computeStyles(this.cellWidth, this.cellHeight, this.cellMargin, this.colCount, this.rowCount, this.animated);
-            },
-
             /**
              * Handle event attachment when a mutation occurs. If call without any mutation update all current tiles/children.
              * @param {MutationRecord} [record] Mutation record holding the added or removed nodes.
@@ -320,80 +316,72 @@ Example:
              */
              computeStyles(cellWidth, cellHeight, cellMargin, colCount, rowCount, animated) {
 
-                /*const idSelector = this.id ? `#${this.id}` : '';
+                const idSelector = this.id ? `#${this.id}` : '';
                 const selfSelector = `the-grid${idSelector}`;
-                const startSelector = Polymer.Settings.useShadow ? '#container > ::content(' : `${selfSelector} `;
-                const endSelector = Polymer.Settings.useShadow ? ')' : '';
-                const customStyle = this._customStyle || document.createElement('custom-style');
-                const style = customStyle && customStyle.querySelector('style') || document.createElement('style');
+                const startSelector = Polymer.Settings.useShadow ? '#container > ::content ' : `${selfSelector} `;
+                const endSelector = Polymer.Settings.useShadow ? '' : '';
+                const style = document.createElement('style');
                 style.setAttribute('is', 'custom-style');
 
-                var margin = this.cellMargin,
-                    height = this.cellHeight,
-                    width = this.cellWidth,
-                    cols = this.colCount,
-                    rows = this.rowCount;
+                var margin = cellMargin,
+                    height = cellHeight,
+                    width = cellWidth,
+                    cols = colCount,
+                    rows = rowCount;
 
                 // Always fallback on [1 x 1] tiles if size is out of boundaries.
                 var styleRules = `
-                        ${startSelector}[width]${endSelector}  { width:  var(--grid-width-1);  }
-                        ${startSelector}[height]${endSelector} { height: var(--grid-height-1); }
+                        ${startSelector}[width]${endSelector}  { width:  var(--the-grid-width-1);  }
+                        ${startSelector}[height]${endSelector} { height: var(--the-grid-height-1); }
                 `;
 
                 var styleVars = {
-                    '--grid-width': `${width * cols + margin * (cols - 1)}px`,
-                    '--grid-height': `${height * rows + margin * (rows - 1)}px`,
-                    '--grid-cell-width': `${this.cellWidth}px`,
-                    '--grid-cell-height': `${this.cellHeight}px`,
-                    '--grid-cell-margin': `${this.cellMargin}px`,
-                    '--grid-move-animation-transition': `${this.animated ? 'top 0.5s ease, left 0.5s ease' : 'none'}`,
-                    '--grid-resize-animation-transition': `${this.animated ? 'top 0.5s ease, left 0.5s ease, width 0.5s ease, height 0.5s ease' : 'none'}`
+                    '--the-grid-width': `${width * cols + margin * (cols - 1)}px`,
+                    '--the-grid-height': `${height * rows + margin * (rows - 1)}px`,
+                    '--the-grid-cell-width': `${cellWidth}px`,
+                    '--the-grid-cell-height': `${cellHeight}px`,
+                    '--the-grid-cell-margin': `${cellMargin}px`,
+                    '--the-grid-move-animation-transition': `${animated ? 'top 0.5s ease, left 0.5s ease' : 'none'}`,
+                    '--the-grid-resize-animation-transition': `${animated ? 'top 0.5s ease, left 0.5s ease, width 0.5s ease, height 0.5s ease' : 'none'}`
                 };
 
                 for(let i = 0; i < cols; i++) {
 
-                    styleVars[`--grid-col-${i}`]       = `${i * width  + i * margin}px`;
-                    styleVars[`--grid-width-${i + 1}`] = `${(i + 1) * width  + i * margin}px`;
+                    styleVars[`--the-grid-col-${i}`]       = `${i * width  + i * margin}px`;
+                    styleVars[`--the-grid-width-${i + 1}`] = `${(i + 1) * width  + i * margin}px`;
 
                     styleRules += `
-                        ${startSelector}[col="${i}"]${endSelector}          { left:  var(--grid-col-${i}); }
-                        ${startSelector}[width="${i + 1}"]${endSelector}    { width: var(--grid-width-${(i + 1)}); }
+                        ${startSelector}[col="${i}"]${endSelector}          { left:  var(--the-grid-col-${i}); }
+                        ${startSelector}[width="${i + 1}"]${endSelector}    { width: var(--the-grid-width-${(i + 1)}); }
                     `;
                 }
 
                 for(let i = 0; i < rows; i++) {
 
-                    styleVars[`--grid-row-${i}`]        = `${i * height  + i * margin}px`;
-                    styleVars[`--grid-height-${i + 1}`] = `${(i + 1) * height  + i * margin}px`;
+                    styleVars[`--the-grid-row-${i}`]        = `${i * height  + i * margin}px`;
+                    styleVars[`--the-grid-height-${i + 1}`] = `${(i + 1) * height  + i * margin}px`;
 
                     styleRules += `
-                        ${startSelector}[row="${i}"]${endSelector}        { top:     var(--grid-row-${i}); }
-                        ${startSelector}[height="${i + 1}"]${endSelector} { height:  var(--grid-height-${(i + 1)}); }
+                        ${startSelector}[row="${i}"]${endSelector}        { top:     var(--the-grid-row-${i}); }
+                        ${startSelector}[height="${i + 1}"]${endSelector} { height:  var(--the-grid-height-${(i + 1)}); }
                     `;
                 }
 
                 style.textContent = styleRules;
-
-                /*console.log("height: " + this.cellHeight);
-                console.log("margin: " + this.cellMargin);
-                console.log("width: " + this.cellWidth);
-                console.log("col: " + this.colCount);
-                console.log("row: " + this.rowCount);
-                console.log(styleVars);
-                */
-                //this.customStyle = styleVars;
-                //this.style = customStyle;
-                console.log(this.customStyle);
-                //console.log(this.style);
-                this.customStyle['--the-grid-move-animation-transition'] = 'top 0.5s ease, left 0.5s ease';
-                this.updateStyles();
+                
+                var str = "";
+                            
+                for (var p in styleVars) {
+                    if (styleVars.hasOwnProperty(p)) {
+                        str += p + ": " + styleVars[p] + ";";
+                    }
+                }
+                this.style.cssText += str;
 
                 // Light Dom customization using external stylesheet.
-                //customStyle.appendChild(style);
-                //this.root.appendChild(customStyle);
-                // Local DOM (Shadow or Shady) customization using inner stylesheet.
-                //this.updateStyles(styleVars);       
-                //this.updateStyles();  
+                this.root.appendChild(style);
+                // Local DOM (Shadow or Shady) customization using inner stylesheet.     
+                this.updateStyles(styleVars);  
             },
 
             /**
@@ -574,7 +562,7 @@ Example:
                     player.setAttribute('col', this.placeholder.getAttribute('col'));
                     player.setAttribute('width', this.placeholder.getAttribute('width'));
                     player.setAttribute('height', this.placeholder.getAttribute('height'));
-                    player.style.transition = 'var(--grid-resize-animation-transition)';
+                    player.style.transition = 'var(--the-grid-resize-animation-transition)';
                     player.style.left = '';
                     player.style.top = '';
                     player.style.width = '';
