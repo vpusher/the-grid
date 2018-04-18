@@ -213,6 +213,7 @@ Example:
                 freeCoordinates: {
                     type: Array,
                     value: null,
+                    reflectToAttribute: true,
                 }
             },
 
@@ -233,7 +234,6 @@ Example:
                 const observer = new MutationObserver(mutations => {
                     mutations.forEach(mutation => {
                         this._upgradeEvents(mutation);
-                        console.log(mutation);
                     });
                 });
 
@@ -268,6 +268,7 @@ Example:
                         this._toggleEvents(child, false);
                     });
                 }
+                this.getFreeCoordinates();
             },
 
             /**
@@ -812,7 +813,7 @@ Example:
                         }
                     }
                 }
-                this.freeCoordinates = this.freeTable;
+                this.freeCoordinates = this.freeTable[0];
                 console.log(this.freeCoordinates);
             }
         });
