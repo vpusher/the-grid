@@ -209,7 +209,7 @@ Example:
                     type: Array,
                     value: null,
                 },
-                
+
                 freeCoordinates: {
                     type: Array,
                     value: null,
@@ -789,8 +789,8 @@ Example:
                 this.freeTable = new Array();
                 this.gridTable = new Array();
                 
-                for (var i = 0; i < 4; i++)
-                    this.gridTable[i] = new Array(0,0,0,0,0,0);
+                for (var i = 0; i < this.rowCount; i++)
+                    this.gridTable[i] = Array.apply(null, new Array(this.colCount)).map(Number.prototype.valueOf,0);;
 
                 for (let i = 0; i < this.children.length; i++) {
 
