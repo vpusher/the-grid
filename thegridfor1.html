@@ -208,6 +208,11 @@ Example:
                 freeTable: {
                     type: Array,
                     value: null,
+                },
+                
+                freeCoordinates: {
+                    type: Array,
+                    value: null,
                 }
             },
 
@@ -807,7 +812,8 @@ Example:
                         }
                     }
                 }
-                console.log(this.freeTable);
+                this.freeCoordinates = this.freeTable;
+                console.log(this.freeCoordinates);
             }
         });
     </script>
