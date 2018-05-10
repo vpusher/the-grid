@@ -7,12 +7,23 @@
 
     <title>Grid Playground</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 
-    <link rel="import" href="../the-grid.html">
-    <link rel="import" href="grid-styles.html">
+    <script type="module" src="../the-grid.js"></script>
+    <script type="module" src="./grid-styles.js"></script>
 
-    <custom-style>
+    <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('div');
+
+$_documentContainer.innerHTML = `<custom-style>
         <style is="custom-style" include="grid-styles">
             body {
                 margin: 0;
@@ -22,13 +33,19 @@
                 font-size: 4vw;
             }
         </style>
-    </custom-style>
+    </custom-style>`;
+
+document.body.appendChild($_documentContainer);
+</script>
 </head>
 <body>
-<dom-bind>
+<script type="module">
+const $_documentContainer = document.createElement('div');
+
+$_documentContainer.innerHTML = `<dom-bind>
     <template>
         <!-- Here is a grid which always fit the window size -->
-        <the-grid draggable overlappable cell-height="{{cellHeight}}" cell-width="{{cellWidth}}" col-count="{{colCount}}" row-count="{{rowCount}}" cell-margin="{{cellMargin}}">
+        <the-grid draggable="" overlappable="" cell-height="{{cellHeight}}" cell-width="{{cellWidth}}" col-count="{{colCount}}" row-count="{{rowCount}}" cell-margin="{{cellMargin}}">
             <tile col="0" row="0" height="8" width="1">
                 <span>Left</span>
             </tile>
@@ -43,25 +60,30 @@
             </tile>
         </the-grid>
     </template>
-</dom-bind>
+</dom-bind>`;
 
-<script>
-    let autobind = document.querySelector('dom-bind');
+document.body.appendChild($_documentContainer);
+</script>
 
-    // The grid will always keeps its margin, columns and rows counts unchanged.
-    autobind.cellMargin = 10;
-    autobind.colCount = 4;
-    autobind.rowCount = 8;
+<script type="module">
+import '../the-grid.js';
+import './grid-styles.js';
+let autobind = document.querySelector('dom-bind');
 
-    // However the cell height and width will be updated so the entire grid fit the window.
-    function update() {
-        autobind.cellHeight = (window.innerHeight - autobind.cellMargin * ( autobind.rowCount - 1)) / autobind.rowCount;
-        autobind.cellWidth = (window.innerWidth - autobind.cellMargin * ( autobind.colCount - 1)) / autobind.colCount;
-    }
+// The grid will always keeps its margin, columns and rows counts unchanged.
+autobind.cellMargin = 10;
+autobind.colCount = 4;
+autobind.rowCount = 8;
 
-    window.addEventListener('resize', update);
+// However the cell height and width will be updated so the entire grid fit the window.
+function update() {
+    autobind.cellHeight = (window.innerHeight - autobind.cellMargin * ( autobind.rowCount - 1)) / autobind.rowCount;
+    autobind.cellWidth = (window.innerWidth - autobind.cellMargin * ( autobind.colCount - 1)) / autobind.colCount;
+}
 
-    update();
+window.addEventListener('resize', update);
+
+update();
 </script>
 
 </body>
