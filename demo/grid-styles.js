@@ -1,6 +1,8 @@
-<link rel="import" href="../../polymer/polymer.html">
+// import '../node_modules/@polymer/polymer/polymer.js';
+const $_documentContainer = document.createElement('div');
+$_documentContainer.setAttribute('style', 'display: none;');
 
-<dom-module id="grid-styles">
+$_documentContainer.innerHTML = `<dom-module id="grid-styles">
     <template>
         <style>
             the-grid tile {
@@ -85,6 +87,6 @@
             }
         </style>
     </template>
-</dom-module>
+</dom-module>`;
 
-
+document.head.appendChild($_documentContainer);

@@ -1,0 +1,28 @@
+{
+  "name": "the-grid",
+  "flat": true,
+  "version": "2.0.0",
+  "description": "Grid layout with drag'n'drop and resize capabilities.",
+  "contributors": [
+    "Florian Maffini <florian.maffini@free.fr>"
+  ],
+  "keywords": [
+    "grid",
+    "layout",
+    "web-component",
+    "web-components",
+    "polymer",
+    "polymer2"
+  ],
+  "main": "the-grid.html",
+  "homepage": "https://github.com/vpusher/the-grid",
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0-pre.1"
+  },
+  "devDependencies": {
+    "@polymer/iron-component-page": "^3.0.0-pre.19",
+    "@polymer/iron-demo-helpers": "^3.0.0-pre.19",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "wct-browser-legacy": "^1.0.0"
+  }
+}

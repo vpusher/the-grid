@@ -7,10 +7,10 @@
 
     <title>the-grid test</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../node_modules/wct-browser-legacy/browser.js"></script>
 
-    <link rel="import" href="../the-grid.html">
+    <script type="module" src="../the-grid.js"></script>
 </head>
 <body>
 <test-fixture id="default-grid">
@@ -64,70 +64,71 @@
     </template>
 </test-fixture>
 
-<script>
-    const mode = new RegExp('shadydom=true', 'i').test(window.location.search) ? 'shady' : 'shadow';
+<script type="module">
+// import '../the-grid.js';
+const mode = new RegExp('shadydom=true', 'i').test(window.location.search) ? 'shady' : 'shadow';
 
-    suite(`<the-grid> #${mode}`, function() {
-        test('can instantiate', function() {
-            let grid = fixture('default-grid');
-            assert.equal(grid.constructor.is, 'the-grid');
-        });
+suite(`<the-grid> #${mode}`, function() {
+    test('can instantiate', function() {
+        let grid = fixture('default-grid');
+        assert.equal(grid.constructor.is, 'the-grid');
+    });
 
-        test('can find the placeholder', function() {
-            let grid = fixture('placeholder-grid');
-            assert.isTrue(grid.placeholder.hasAttribute('placeholder'));
-            //console.log(window.location.search);
-        });
+    test('can find the placeholder', function() {
+        let grid = fixture('placeholder-grid');
+        assert.isTrue(grid.placeholder.hasAttribute('placeholder'));
+        //console.log(window.location.search);
+    });
 
-        test('applies position styles on tiles properly', function() {
-            let grid = fixture('tile-position');
-            let bounds = grid.getBoundingClientRect();
+    test('applies position styles on tiles properly', function() {
+        let grid = fixture('tile-position');
+        let bounds = grid.getBoundingClientRect();
 
-            ['zero', 'one', 'two'].forEach(id => {
-                let tile = grid.querySelector(`#${id}`);
-                let rect = tile.getBoundingClientRect();
-                let col = +tile.getAttribute('col');
-                let row = +tile.getAttribute('row');
-                assert.equal(rect.left - bounds.left, grid.cellWidth * col + grid.cellMargin * (col || 1 - 1), `tile #${id} has a wrong 'left' style`);
-                assert.equal(rect.top - bounds.top, grid.cellHeight * row + grid.cellMargin * (row || 1 - 1), `tile #${id} has a wrong 'top' style`);
-            });
-        });
-
-        test('applies size styles on tiles properly', function() {
-            let grid = fixture('tile-size');
-
-            ['zero', 'one', 'two'].forEach(id => {
-                let tile = grid.querySelector(`#${id}`);
-                let rect = tile.getBoundingClientRect();
-                let width = +tile.getAttribute('width') || 1; // for case 'zero'.
-                let height = +tile.getAttribute('height') || 1; // for case 'zero'.
-                assert.equal(rect.width, grid.cellWidth * width + grid.cellMargin * (width - 1), `tile #${id} has a wrong 'width' style`);
-                assert.equal(rect.height, grid.cellHeight * height + grid.cellMargin * (height - 1), `tile #${id} has a wrong 'height' style`);
-            });
-        });
-
-        test('ensures lower bounds size for tiles is [1 x 1]', function() {
-            let grid = fixture('tile-lower-size');
-
-            let tile = grid.querySelector(`#lower`);
+        ['zero', 'one', 'two'].forEach(id => {
+            let tile = grid.querySelector(`#${id}`);
             let rect = tile.getBoundingClientRect();
-            assert.equal(rect.width, grid.cellWidth * 1 , `tile #lower needs a 'width' of 1`);
-            assert.equal(rect.height, grid.cellHeight * 1, `tile #lower needs a 'height' of 1`);
-
-        });
-
-        test('ensures upper bounds size for tiles is [1 x 1]', function() {
-            let grid = fixture('tile-upper-size');
-
-            let tile = grid.querySelector(`#upper`);
-            let rect = tile.getBoundingClientRect();
-            let width = +tile.getAttribute('width');
-            let height = +tile.getAttribute('height');
-            assert.equal(rect.width,  grid.cellWidth * 1, `tile #upper needs a 'width' of 1`);
-            assert.equal(rect.height,  grid.cellHeight * 1, `tile #upper needs a 'height' of 1`);
-
+            let col = +tile.getAttribute('col');
+            let row = +tile.getAttribute('row');
+            assert.equal(rect.left - bounds.left, grid.cellWidth * col + grid.cellMargin * (col || 1 - 1), `tile #${id} has a wrong 'left' style`);
+            assert.equal(rect.top - bounds.top, grid.cellHeight * row + grid.cellMargin * (row || 1 - 1), `tile #${id} has a wrong 'top' style`);
         });
     });
+
+    test('applies size styles on tiles properly', function() {
+        let grid = fixture('tile-size');
+
+        ['zero', 'one', 'two'].forEach(id => {
+            let tile = grid.querySelector(`#${id}`);
+            let rect = tile.getBoundingClientRect();
+            let width = +tile.getAttribute('width') || 1; // for case 'zero'.
+            let height = +tile.getAttribute('height') || 1; // for case 'zero'.
+            assert.equal(rect.width, grid.cellWidth * width + grid.cellMargin * (width - 1), `tile #${id} has a wrong 'width' style`);
+            assert.equal(rect.height, grid.cellHeight * height + grid.cellMargin * (height - 1), `tile #${id} has a wrong 'height' style`);
+        });
+    });
+
+    test('ensures lower bounds size for tiles is [1 x 1]', function() {
+        let grid = fixture('tile-lower-size');
+
+        let tile = grid.querySelector(`#lower`);
+        let rect = tile.getBoundingClientRect();
+        assert.equal(rect.width, grid.cellWidth * 1 , `tile #lower needs a 'width' of 1`);
+        assert.equal(rect.height, grid.cellHeight * 1, `tile #lower needs a 'height' of 1`);
+
+    });
+
+    test('ensures upper bounds size for tiles is [1 x 1]', function() {
+        let grid = fixture('tile-upper-size');
+
+        let tile = grid.querySelector(`#upper`);
+        let rect = tile.getBoundingClientRect();
+        let width = +tile.getAttribute('width');
+        let height = +tile.getAttribute('height');
+        assert.equal(rect.width,  grid.cellWidth * 1, `tile #upper needs a 'width' of 1`);
+        assert.equal(rect.height,  grid.cellHeight * 1, `tile #upper needs a 'height' of 1`);
+
+    });
+});
 </script>
 </body>
 </html>
