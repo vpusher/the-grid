@@ -321,8 +321,7 @@ Example:
                 const selfSelector = `the-grid${idSelector}`;
                 const startSelector = Polymer.Settings.useShadow ? '#container > ::slotted(' : `${selfSelector} `;
                 const endSelector = Polymer.Settings.useShadow ? ')' : '';
-                const customStyle = this._customStyle || document.createElement('custom-style');
-                const style = customStyle && customStyle.querySelector('style') || document.createElement('style');
+                const style = this._style || document.createElement('style');
 
                 let margin = this.cellMargin,
                     height = this.cellHeight,
@@ -370,11 +369,10 @@ Example:
 
                 style.textContent = styleRules;
 
-                this._customStyle = customStyle;
+                this._style = style;
 
                 // Light Dom customization using external stylesheet.
-                customStyle.appendChild(style);
-                this.root.appendChild(customStyle);
+                this.root.appendChild(style);
                 // Local DOM (Shadow or Shady) customization using inner stylesheet.
                 this.updateStyles(styleVars);
 
