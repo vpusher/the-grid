@@ -18,25 +18,17 @@ Example:
         <style>
             :host {
                 display: inline-block;
-                --grid-width: 1090px;  /* cellWidth * colCount + cellMargin * (colCount - 1) */
-                --grid-height: 1090px; /* cellHeight * rowCount + cellMargin * (rowCount - 1) */
-                --grid-cell-height: 100px;
-                --grid-cell-width: 100px;
-                --grid-cell-margin: 10px;
                 --grid-move-animation-transition: 'none';
                 --grid-resize-animation-transition: 'none';
             }
 
             #container {
                 position: relative;
-                width: var(--grid-width);
-                height: var(--grid-height);
             }
 
             #container > ::slotted(*) {
                 display: block;
                 position: absolute;
-                transition: var(--grid-move-animation-transition);
                 -webkit-touch-callout: none; /* iOS Safari */
                 -webkit-user-select: none; /* Safari */
                 -moz-user-select: none; /* Firefox */
@@ -72,7 +64,7 @@ Example:
                         type: Number,
                         value: 100,
                         reflectToAttribute: true,
-                        observer: 'computeStyles'
+                        observer: '_computeStyleDebounced'
                     },
 
                     /**
@@ -83,7 +75,7 @@ Example:
                         type: Number,
                         value: 100,
                         reflectToAttribute: true,
-                        observer: 'computeStyles'
+                        observer: '_computeStyleDebounced'
                     },
 
                     /**
@@ -94,7 +86,7 @@ Example:
                         type: Number,
                         value: 0,
                         reflectToAttribute: true,
-                        observer: 'computeStyles'
+                        observer: '_computeStyleDebounced'
                     },
 
                     minWidth: {
@@ -129,7 +121,7 @@ Example:
                         type: Number,
                         value: 10,
                         reflectToAttribute: true,
-                        observer: 'computeStyles'
+                        observer: '_computeStyleDebounced'
                     },
 
                     /**
@@ -140,7 +132,7 @@ Example:
                         type: Number,
                         value: 10,
                         reflectToAttribute: true,
-                        observer: 'computeStyles'
+                        observer: '_computeStyleDebounced'
                     },
 
                     /**
@@ -171,7 +163,7 @@ Example:
                         type: Boolean,
                         value: false,
                         reflectToAttribute: true,
-                        observer: 'computeStyles'
+                        observer: '_computeAnimationStyle'
                     },
 
                     /**
@@ -204,6 +196,10 @@ Example:
                         type: Boolean,
                         value: false,
                         reflectToAttribute: true,
+                    },
+
+                    _computeStyleDebounced : {
+                        type: Function
                     }
                 }
             }
@@ -213,10 +209,12 @@ Example:
              */
             constructor() {
                 super();
-
+                this._computeStyleDebounced = _.debounce(() => {
+                    this.computeStyles();
+                }, 100);
                 // Create the mutation observer instance.
-                const observer = new MutationObserver(mutations => 
-                  mutations.forEach(mutation => this._upgradeEvents(mutation)));
+                const observer = new MutationObserver(mutations =>
+                    mutations.forEach(mutation => this._upgradeEvents(mutation)));
 
                 // Configuration of the observer: only listen for children changes.
                 const config = { childList: true };
@@ -227,7 +225,7 @@ Example:
 
             connectedCallback () {
                 super.connectedCallback();
-                this.computeStyles();
+                this._computeStyleDebounced();
             }
 
             /**
@@ -308,6 +306,15 @@ Example:
                 }
             }
 
+            _computeAnimationStyle () {
+                let styleVars = {
+                    '--grid-move-animation-transition': `${this.animated ? 'top 0.5s ease, left 0.5s ease' : 'none'}`,
+                    '--grid-resize-animation-transition': `${this.animated ? 'top 0.5s ease, left 0.5s ease, width 0.5s ease, height 0.5s ease' : 'none'}`
+                };
+                // Local DOM (Shadow or Shady) customization using inner stylesheet.
+                this.updateStyles(styleVars);
+            }
+
             /**
              * Compute the style sheet of the grid depending on its attributes/properties.
              *
@@ -321,8 +328,7 @@ Example:
                 const selfSelector = `the-grid${idSelector}`;
                 const startSelector = Polymer.Settings.useShadow ? '#container > ::slotted(' : `${selfSelector} `;
                 const endSelector = Polymer.Settings.useShadow ? ')' : '';
-                const customStyle = this._customStyle || document.createElement('custom-style');
-                const style = customStyle && customStyle.querySelector('style') || document.createElement('style');
+                const customStyle = this._style ||  document.createElement('style');
 
                 let margin = this.cellMargin,
                     height = this.cellHeight,
@@ -331,53 +337,45 @@ Example:
                     rows = this.rowCount;
 
                 // Always fallback on [1 x 1] tiles if size is out of boundaries.
+                const grid1Height     = `${(1 + 1) * height  + 1 * margin}px`;
+                const grid1Width = `${(1 + 1) * width  + 1 * margin}px`;
                 let styleRules = `
-                        ${startSelector}[width]${endSelector}  { width:  var(--grid-width-1);  }
-                        ${startSelector}[height]${endSelector} { height: var(--grid-height-1); }
+                        ${startSelector}[width]${endSelector}  { width:  ${grid1Width};  }
+                        ${startSelector}[height]${endSelector} { height: ${grid1Height}; }
                 `;
 
-                let styleVars = {
-                    '--grid-width': `${width * cols + margin * (cols - 1)}px`,
-                    '--grid-height': `${height * rows + margin * (rows - 1)}px`,
-                    '--grid-cell-width': `${this.cellWidth}px`,
-                    '--grid-cell-height': `${this.cellHeight}px`,
-                    '--grid-cell-margin': `${this.cellMargin}px`,
-                    '--grid-move-animation-transition': `${this.animated ? 'top 0.5s ease, left 0.5s ease' : 'none'}`,
-                    '--grid-resize-animation-transition': `${this.animated ? 'top 0.5s ease, left 0.5s ease, width 0.5s ease, height 0.5s ease' : 'none'}`
-                };
+                const container = this.shadowRoot.querySelector('#container');
+                container.style.width = `${width * cols + margin * (cols - 1)}px`;
+                container.style.height = `${height * rows + margin * (rows - 1)}px`;
 
                 for(let i = 0; i < cols; i++) {
 
-                    styleVars[`--grid-col-${i}`]       = `${i * width  + i * margin}px`;
-                    styleVars[`--grid-width-${i + 1}`] = `${(i + 1) * width  + i * margin}px`;
+                    const colWidth      = `${i * width  + i * margin}px`;
+                    const gridWidth = `${(i + 1) * width  + i * margin}px`;
 
                     styleRules += `
-                        ${startSelector}[col="${i}"]${endSelector}          { left:  var(--grid-col-${i}); }
-                        ${startSelector}[width="${i + 1}"]${endSelector}    { width: var(--grid-width-${(i + 1)}); }
+                        ${startSelector}[col="${i}"]${endSelector}          { left:  ${colWidth}; }
+                        ${startSelector}[width="${i + 1}"]${endSelector}    { width: ${gridWidth}; }
                     `;
                 }
 
                 for(let i = 0; i < rows; i++) {
 
-                    styleVars[`--grid-row-${i}`]        = `${i * height  + i * margin}px`;
-                    styleVars[`--grid-height-${i + 1}`] = `${(i + 1) * height  + i * margin}px`;
+                    const rowHeight      = `${i * height  + i * margin}px`;
+                    const gridHeight     = `${(i + 1) * height  + i * margin}px`;
 
                     styleRules += `
-                        ${startSelector}[row="${i}"]${endSelector}        { top:     var(--grid-row-${i}); }
-                        ${startSelector}[height="${i + 1}"]${endSelector} { height:  var(--grid-height-${(i + 1)}); }
+                        ${startSelector}[row="${i}"]${endSelector}        { top:     ${rowHeight}; }
+                        ${startSelector}[height="${i + 1}"]${endSelector} { height:  ${gridHeight}; }
                     `;
                 }
 
-                style.textContent = styleRules;
+                customStyle.textContent = styleRules;
 
-                this._customStyle = customStyle;
+                this._style = customStyle;
 
                 // Light Dom customization using external stylesheet.
-                customStyle.appendChild(style);
                 this.root.appendChild(customStyle);
-                // Local DOM (Shadow or Shady) customization using inner stylesheet.
-                this.updateStyles(styleVars);
-
             }
 
             /**
