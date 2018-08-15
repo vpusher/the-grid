@@ -210,13 +210,67 @@ Example:
 
             /**
              * Create a `<the-grid>` element.
+             * @fires TheGrid#add
+             * @fires TheGrid#remove
              */
             constructor() {
                 super();
 
+                /**
+                * @event TheGrid#initialized
+                * @param {TheGrid} grid
+                * @param {HTMLNode[]} addedNotes
+                * @param {HTMLNode[]} removedNodes
+                */
+                /**
+                * @event TheGrid#add
+                * @param {TheGrid} grid
+                * @param {HTMLNode[]} addedNotes
+                */
+                /** 
+                * @event TheGrid#remove
+                * @param {TheGrid} grid
+                * @param {HTMLNode[]} removedNodes
+                */
                 // Create the mutation observer instance.
-                const observer = new MutationObserver(mutations => 
-                  mutations.forEach(mutation => this._upgradeEvents(mutation)));
+                let firstTime = true;
+                const observer = new MutationObserver(mutations => {
+                    mutations.forEach(mutation => {
+                        this._upgradeEvents(mutation);
+                        if(firstTime) {
+                            firstTime = false;
+                            this.dispatchEvent(new CustomEvent('initialized', {
+                            bubbles: true,
+                            composed: true,
+                                detail: {
+                                    grid: this,
+                                    addedNotes: mutation.addedNodes,
+                                    removedNodes: mutation.removedNodes
+                                }
+                            }));
+                        }
+                        if(mutation.addedNodes.length > 0) {
+                            this.dispatchEvent(new CustomEvent('add', {
+                            bubbles: true,
+                            composed: true,
+                                detail: {
+                                    grid: this,
+                                    addedNotes: mutation.addedNodes
+                                }
+                            }));
+                        }
+                        if(mutation.removedNodes.length > 0) {
+                            this.dispatchEvent(new CustomEvent('remove', {
+                            bubbles: true,
+                            composed: true,
+                                detail: {
+                                    grid: this,
+                                    removedNodes: mutation.removedNodes
+                                }
+                            }));
+                        }
+                    });
+                });
 
                 // Configuration of the observer: only listen for children changes.
                 const config = { childList: true };
