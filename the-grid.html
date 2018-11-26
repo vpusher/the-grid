@@ -49,6 +49,11 @@ Example:
                 display: none;
                 transition: none;
             }
+            
+            #container > ::slotted(tile) {
+              @apply --the-grid-tile;
+            }
+
         </style>
 
         <div id="container">
