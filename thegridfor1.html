@@ -198,22 +198,6 @@ Example:
                     type: Boolean,
                     value: false,
                     reflectToAttribute: true,
-                },    
-                
-                gridTable: {
-                    type: Array,
-                    value: null,
-                },
-
-                freeTable: {
-                    type: Array,
-                    value: null,
-                },
-
-                freeCoordinates: {
-                    type: Array,
-                    value: null,
-                    reflectToAttribute: true,
                 }
             },
 
@@ -268,7 +252,6 @@ Example:
                         this._toggleEvents(child, false);
                     });
                 }
-                this.getFreeCoordinates();
             },
 
             /**
@@ -488,9 +471,6 @@ Example:
                             tile: player
                         }
                     }));
-                    this.getFreeCoordinates();
-                    this.gridTable = [];
-                    this.freeTable = [];
                 }
                 
                 this._safePreventDefault(e.detail.sourceEvent);
@@ -609,9 +589,6 @@ Example:
                             tile: player
                         }
                     }));
-                    this.getFreeCoordinates();
-                    this.gridTable = [];
-                    this.freeTable = [];
                 }
 
                 this._safePreventDefault(e.detail.sourceEvent);
@@ -767,54 +744,6 @@ Example:
                 }
 
                 return current !== this && current !== resizer ? current : undefined;
-            },
-
-            /**
-             * Output as JSON array the current positions and sizes of all tiles.
-             * Represents the serialized state of the grid.
-             *
-             * @returns {Array<{col: Number, row: Number, width: Number, height: Number}>} Array of tile's coordinates (position and size) objects.
-             */
-            /*serialize() {
-                return Array.from(this.children).map(child => {
-                    return {
-                        col: child.getAttribute("col"),
-                        row: child.getAttribute("row"),
-                        width: child.getAttribute("width"),
-                        height: child.getAttribute("height")
-                    }
-                });
-            },*/
-
-            getFreeCoordinates() {
-                this.freeTable = new Array();
-                this.gridTable = new Array();
-                
-                for (var i = 0; i < this.rowCount; i++)
-                    this.gridTable[i] = Array.apply(null, new Array(this.colCount)).map(Number.prototype.valueOf,0);;
-
-                for (let i = 0; i < this.children.length; i++) {
-
-                    let child = this.children[i];
-
-                    let childCoords = this.getCoordinates(child);
-                    for(let j = 0; j < childCoords.height; j++){
-                        for(let k = 0; k < childCoords.width; k++){
-                            this.gridTable[childCoords.row+j][childCoords.col+k] = 1;
-                        }
-                    }
-                    
-                }
-
-                for(let i = 0; i < this.rowCount; i++){
-                    for(let j = 0; j < this.colCount; j++){
-                        if(this.gridTable[i][j] == 0){
-                            this.freeTable.push([i,j]);
-                        }
-                    }
-                }
-                this.freeCoordinates = this.freeTable[0];
-                console.log(this.freeCoordinates);
             }
         });
     </script>
