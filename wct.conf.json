@@ -1,0 +1,44 @@
+{
+    "plugins": {
+        "istanbub": {
+            "dir": "./coverage",
+            "reporters": [
+                "text-summary",
+                "lcov"
+            ],
+            "include": [
+                "**/*.js"
+            ],
+            "exclude": [
+                "**/test/**",
+                "**/coverage/**",
+                "**/demo/**",
+                "**/node_modules/**"
+            ],
+            "thresholds": {
+                "global": {
+                    "statements": 15,
+                    "branches": 15,
+                    "functions": 15,
+                    "lines": 15
+                }
+            }
+        },
+        "local": {
+            "skipSeleniumInstall": true,
+            "disabled": false,
+            "browsers": [
+                "chrome"
+            ],
+            "browserOptions": {
+                "chrome": [
+                    "start-maximized",
+                    "headless",
+                    "disable-gpu",
+                    "no-sandbox"
+                ]
+            }
+        }
+    },
+    "npm": true
+}

@@ -1,0 +1,30 @@
+{
+  "description": "Grid layout with drag'n'drop and resize capabilities.",
+  "keywords": [
+    "grid",
+    "layout",
+    "web-component",
+    "web-components",
+    "polymer",
+    "polymer3"
+  ],
+  "homepage": "https://github.com/vpusher/the-grid",
+  "name": "@v-pusher/the-grid",
+  "version": "1.4.0",
+  "main": "the-grid.js",
+  "author": "Florian Maffini <florian.maffini@free.fr>",
+  "dependencies": {
+    "@polymer/polymer": "^3.0.5"
+  },
+  "devDependencies": {
+    "@polymer/iron-component-page": "^4.0.1",
+    "@polymer/iron-demo-helpers": "^3.0.2",
+    "@webcomponents/webcomponentsjs": "^2.1.3",
+    "wct-browser-legacy": "^1.0.2"
+  },
+  "scripts": {
+    "serve": "polymer serve --npm --open --browser Chrome",
+    "test": "polymer test --config-file=\"wct.conf.json\"",
+    "coverage": "start http://127.0.0.1:8081/components/@v-pusher/the-grid/coverage/lcov-report/index.html"
+  }
+}

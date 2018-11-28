@@ -1,0 +1,12 @@
+{
+    "root": ".",
+    "entrypoint": "index.html",
+    "sources": [
+        "the-grid.js",
+        "debug-grid.js"
+    ],
+    "extraDependencies": [
+        "node_modules/@webcomponents/webcomponentsjs/**"
+    ],
+    "npm": true
+}

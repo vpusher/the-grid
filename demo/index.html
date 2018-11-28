@@ -1,288 +1,292 @@
 <!doctype html>
 
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
     <title>the-grid demos</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    
 
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../the-grid.html">
-    <link rel="import" href="../debug-grid.html">
-    <link rel="import" href="grid-styles.html">
+    <script type="module" src="../../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+    <script type="module" src="../../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
+    <script type="module" src="../the-grid.js"></script>
+    <script type="module" src="../debug-grid.js"></script>
 
     <custom-style>
         <style is="custom-style" include="demo-pages-shared-styles"></style>
     </custom-style>
 
-    <custom-style>
-        <style is="custom-style" include="grid-styles">
-            the-grid {
-                border: 1px solid #ddd;
-            }
+    <style>
+        the-grid {
+            border: 1px solid #ddd;
+        }
 
-            debug-grid {
-                left: 44px;
-            }
-        </style>
-    </custom-style>
+        debug-grid {
+            left: 44px;
+        }
+    </style>
 </head>
+
 <body>
+    <div class="vertical-section-container">
+        <h3>Basic static grid</h3>
+        <demo-snippet>
+            <template>
+                <style>
+                    #grid1 tile {
+                        background-color: coral;
+                    }
+                </style>
 
-<div class="vertical-section-container">
-    <h3>Basic static grid</h3>
-    <demo-snippet>
-        <template>
-            <style>
-                #grid1 tile {
-                    background-color: coral;
-                }
-            </style>
+                <the-grid id="grid1" cell-height="100" cell-width="100" cell-margin="15" col-count="6" row-count="3">
+                    <tile col="0" row="0" height="3" width="1"></tile>
+                    <tile col="1" row="0" height="1" width="3"></tile>
+                    <tile col="1" row="2" height="1" width="1"></tile>
+                    <tile col="2" row="1" height="1" width="1"></tile>
+                    <tile col="3" row="1" height="2" width="1"></tile>
+                    <tile col="4" row="0" height="3" width="2"></tile>
+                    <div placeholder></div>
+                </the-grid>
+            </template>
+        </demo-snippet>
+    </div>
 
-            <the-grid id="grid1" cell-height="100" cell-width="100" cell-margin="15" col-count="6" row-count="3">
-                <tile col="0" row="0" height="3" width="1"></tile>
-                <tile col="1" row="0" height="1" width="3"></tile>
-                <tile col="1" row="2" height="1" width="1"></tile>
-                <tile col="2" row="1" height="1" width="1"></tile>
-                <tile col="3" row="1" height="2" width="1"></tile>
-                <tile col="4" row="0" height="3" width="2"></tile>
-                <div placeholder></div>
-            </the-grid>
-        </template>
-    </demo-snippet>
-</div>
+    <div class="vertical-section-container">
+        <h3>Draggable tiles grid</h3>
+        <demo-snippet>
+            <template>
+                <style>
+                    #grid2 tile {
+                        background-color: limegreen;
+                    }
 
-<div class="vertical-section-container">
-    <h3>Draggable tiles grid</h3>
-    <demo-snippet>
-        <template>
-            <style>
-                #grid2 tile {
-                    background-color: limegreen;
-                }
+                    #grid2 [placeholder] {
+                        background-color: lightgray;
+                    }
+                </style>
 
-                #grid2 [placeholder] {
-                    background-color: lightgray;
-                }
-            </style>
+                <the-grid id="grid2" draggable cell-height="75" cell-width="75" cell-margin="5" col-count="10"
+                    row-count="5">
+                    <tile col="1" row="1" height="1" width="1">Drag me</tile>
+                    <tile col="5" row="0" height="2" width="1"></tile>
+                    <tile col="2" row="3" height="2" width="2"></tile>
+                    <div placeholder></div>
+                </the-grid>
+            </template>
+        </demo-snippet>
+    </div>
 
-            <the-grid id="grid2" draggable cell-height="75" cell-width="75" cell-margin="5" col-count="10" row-count="5">
-                <tile col="1" row="1" height="1" width="1">Drag me</tile>
-                <tile col="5" row="0" height="2" width="1"></tile>
-                <tile col="2" row="3" height="2" width="2"></tile>
-                <div placeholder></div>
-            </the-grid>
-        </template>
-    </demo-snippet>
-</div>
+    <div class="vertical-section-container">
+        <h3>Resizable tiles grid</h3>
+        <demo-snippet>
+            <template>
+                <style>
+                    #grid3 tile {
+                        background-color: slateblue;
+                    }
 
-<div class="vertical-section-container">
-    <h3>Resizable tiles grid</h3>
-    <demo-snippet>
-        <template>
-            <style>
-                #grid3 tile {
-                    background-color: slateblue;
-                }
+                    #grid3 [placeholder] {
+                        background-color: lightgray;
+                    }
+                </style>
 
-                #grid3 [placeholder] {
-                    background-color: lightgray;
-                }
-            </style>
+                <the-grid id="grid3" resizable cell-height="100" cell-width="100" cell-margin="5" col-count="8"
+                    row-count="5">
+                    <tile col="2" row="0" height="1" width="4">
+                        Resize me
+                        <span resize="right">│</span>
+                    </tile>
+                    <tile col="0" row="1" height="3" width="2">
+                        <span resize="bottom-right">┘</span>
+                    </tile>
+                    <tile col="5" row="2" height="2" width="2">
+                        <span resize="left">│</span>
+                        <span resize="right">│</span>
+                        <span resize="top">─</span>
+                        <span resize="bottom">─</span>
+                    </tile>
+                    <div placeholder></div>
+                </the-grid>
+            </template>
+        </demo-snippet>
+    </div>
 
-            <the-grid id="grid3" resizable cell-height="100" cell-width="100" cell-margin="5" col-count="8" row-count="5">
-                <tile col="2" row="0" height="1" width="4">
-                    Resize me
-                    <span resize="right">│</span>
-                </tile>
-                <tile col="0" row="1" height="3" width="2">
-                    <span resize="bottom-right">┘</span>
-                </tile>
-                <tile col="5" row="2" height="2" width="2" >
-                    <span resize="left">│</span>
-                    <span resize="right">│</span>
-                    <span resize="top">─</span>
-                    <span resize="bottom">─</span>
-                </tile>
-                <div placeholder></div>
-            </the-grid>
-        </template>
-    </demo-snippet>
-</div>
+    <div class="vertical-section-container">
+        <h3>Overlappable tiles grid</h3>
+        <demo-snippet>
+            <template>
+                <style>
+                    #grid4 tile {
+                        background-color: #cdcd51;
+                    }
 
-<div class="vertical-section-container">
-    <h3>Overlappable tiles grid</h3>
-    <demo-snippet>
-        <template>
-            <style>
-                #grid4 tile {
-                    background-color: #cdcd51;
-                }
+                    #grid4 [placeholder] {
+                        background-color: lightgray;
+                    }
+                </style>
 
-                #grid4 [placeholder] {
-                    background-color: lightgray;
-                }
-            </style>
+                <the-grid id="grid4" overlappable draggable cell-height="100" cell-width="100" cell-margin="5"
+                    col-count="8" row-count="5">
+                    <tile col="5" row="1" height="3" width="2">
+                    </tile>
+                    <tile col="3" row="1" height="3" width="2">
+                    </tile>
+                    <tile col="1" row="1" height="3" width="2">
+                        Stack me
+                    </tile>
+                    <div placeholder></div>
+                </the-grid>
+            </template>
+        </demo-snippet>
+    </div>
 
-            <the-grid id="grid4" overlappable draggable cell-height="100" cell-width="100" cell-margin="5" col-count="8" row-count="5">
-                <tile col="5" row="1" height="3" width="2" >
-                </tile>
-                <tile col="3" row="1" height="3" width="2" >
-                </tile>
-                <tile col="1" row="1" height="3" width="2" >
-                    Stack me
-                </tile>
-                <div placeholder></div>
-            </the-grid>
-        </template>
-    </demo-snippet>
-</div>
+    <div class="vertical-section-container">
+        <h3>Animated grid (smooth moves and resizes)</h3>
+        <demo-snippet>
+            <template>
+                <style>
+                    #grid5 tile {
+                        background-color: tomato;
+                    }
 
-<div class="vertical-section-container">
-    <h3>Animated grid (smooth moves and resizes)</h3>
-    <demo-snippet>
-        <template>
-            <style>
-                #grid5 tile {
-                    background-color: tomato;
-                }
+                    #grid5 [placeholder] {
+                        background-color: lightgray;
+                    }
+                </style>
 
-                #grid5 [placeholder] {
-                    background-color: lightgray;
-                }
-            </style>
+                <the-grid id="grid5" draggable resizable animated cell-height="80" cell-width="80" cell-margin="5"
+                    col-count="10" row-count="5">
+                    <tile col="0" row="0" height="5" width="1">
+                    </tile>
+                    <tile col="3" row="3" height="1" width="1">
+                        <span resize="bottom-right">┘</span>
+                    </tile>
+                    <tile col="5" row="1" height="2" width="2">
+                        <span resize="left">│</span>
+                        <span resize="right">│</span>
+                        <span resize="top">─</span>
+                        <span resize="bottom">─</span>
+                        <span resize="top-right">┐</span>
+                        <span resize="top-left">┌</span>
+                        <span resize="bottom-right">┘</span>
+                        <span resize="bottom-left">└</span>
+                    </tile>
+                    <div placeholder></div>
+                </the-grid>
+            </template>
+        </demo-snippet>
+    </div>
 
-            <the-grid id="grid5" draggable resizable animated cell-height="80" cell-width="80" cell-margin="5" col-count="10" row-count="5">
-                <tile col="0" row="0" height="5" width="1" >
-                </tile>
-                <tile col="3" row="3" height="1" width="1" >
-                    <span resize="bottom-right">┘</span>
-                </tile>
-                <tile col="5" row="1" height="2" width="2" >
-                    <span resize="left">│</span>
-                    <span resize="right">│</span>
-                    <span resize="top">─</span>
-                    <span resize="bottom">─</span>
-                    <span resize="top-right">┐</span>
-                    <span resize="top-left">┌</span>
-                    <span resize="bottom-right">┘</span>
-                    <span resize="bottom-left">└</span>
-                </tile>
-                <div placeholder></div>
-            </the-grid>
-        </template>
-    </demo-snippet>
-</div>
+    <div class="vertical-section-container">
+        <h3>Auto-growing grid</h3>
+        <demo-snippet>
+            <template>
+                <style>
+                    #grid6 tile {
+                        background-color: teal;
+                    }
 
-<div class="vertical-section-container">
-    <h3>Auto-growing grid</h3>
-    <demo-snippet>
-        <template>
-            <style>
-                #grid6 tile {
-                    background-color: teal;
-                }
+                    #grid6 [placeholder] {
+                        background-color: lightgray;
+                    }
+                </style>
 
-                #grid6 [placeholder] {
-                    background-color: lightgray;
-                }
-            </style>
+                <the-grid id="grid6" draggable row-autogrow col-autogrow cell-height="50" cell-width="50" cell-margin="5"
+                    col-count="3" row-count="3">
+                    <tile col="0" row="0" height="1" width="3">⇥</tile>
+                    <tile col="1" row="2" height="1" width="1">⤓</tile>
+                    <div placeholder></div>
+                </the-grid>
+            </template>
+        </demo-snippet>
+    </div>
 
-            <the-grid id="grid6" draggable row-autogrow col-autogrow cell-height="50" cell-width="50" cell-margin="5" col-count="3" row-count="3">
-                <tile col="0" row="0" height="1" width="3" >⇥</tile>
-                <tile col="1" row="2" height="1" width="1" >⤓</tile>
-                <div placeholder></div>
-            </the-grid>
-        </template>
-    </demo-snippet>
-</div>
+    <div class="vertical-section-container">
+        <h3>Min/Max constraints on tile's size</h3>
+        <demo-snippet>
+            <template>
+                <style>
+                    #grid7 tile {
+                        background-color: plum;
+                    }
 
-<div class="vertical-section-container">
-    <h3>Min/Max constraints on tile's size</h3>
-    <demo-snippet>
-        <template>
-            <style>
-                #grid7 tile {
-                    background-color: plum;
-                }
-
-                #grid7 [placeholder] {
-                    background-color: lightgray;
-                }
-            </style>
-            <the-grid id="grid7" min-height="2" max-height="5" draggable resizable cell-height="40" cell-width="40" cell-margin="0" col-count="10" row-count="10">
-                <tile col="5" row="5" height="3" width="4" max-width="4">
-                    Min: 1 x 2<br/>
-                    Max: 4 x 5
-                    <span resize="top-left">┌</span>
-                    <span resize="bottom-right">┘</span>
-                </tile>
-                <tile col="1" row="2" height="2" width="2" min-width="2">
-                    Min: 2 x 2<br/>
-                    Max: 10 x 5
-                    <span resize="top-left">┌</span>
-                    <span resize="bottom-right">┘</span>
-                </tile>
-                <div placeholder></div>
-            </the-grid>
-            <debug-grid cell-height="40" cell-width="40" cell-margin="0" col-count="10" row-count="10"></debug-grid>
-        </template>
-    </demo-snippet>
-</div>
+                    #grid7 [placeholder] {
+                        background-color: lightgray;
+                    }
+                </style>
+                <the-grid id="grid7" min-height="2" max-height="5" draggable resizable cell-height="40" cell-width="40"
+                    cell-margin="0" col-count="10" row-count="10">
+                    <tile col="5" row="5" height="3" width="4" max-width="4">
+                        Min: 1 x 2<br />
+                        Max: 4 x 5
+                        <span resize="top-left">┌</span>
+                        <span resize="bottom-right">┘</span>
+                    </tile>
+                    <tile col="1" row="2" height="2" width="2" min-width="2">
+                        Min: 2 x 2<br />
+                        Max: 10 x 5
+                        <span resize="top-left">┌</span>
+                        <span resize="bottom-right">┘</span>
+                    </tile>
+                    <div placeholder></div>
+                </the-grid>
+                <debug-grid cell-height="40" cell-width="40" cell-margin="0" col-count="10" row-count="10"></debug-grid>
+            </template>
+        </demo-snippet>
+    </div>
 
 
-<div class="vertical-section-container">
-    <h3>Emoji grid</h3>
-    <demo-snippet>
-        <template>
-            <style>
-                #grid-emoji span {
-                    font-size: 32px;
-                    line-height: 32px;
-                    cursor: move;
-                }
+    <div class="vertical-section-container">
+        <h3>Emoji grid</h3>
+        <demo-snippet>
+            <template>
+                <style>
+                    #grid-emoji span {
+                        font-size: 32px;
+                        line-height: 32px;
+                        cursor: move;
+                    }
 
-                #grid-emoji [placeholder] {
-                    background-color: lightgray;
-                    border-radius: 50%;
-                }
+                    #grid-emoji [placeholder] {
+                        background-color: lightgray;
+                        border-radius: 50%;
+                    }
 
-                dom-repeat {
-                    display: none;
-                }
-            </style>
+                    dom-repeat {
+                        display: none;
+                    }
+                </style>
 
-            <dom-bind id="binding-emoji">
-                <template>
-                    <the-grid id="grid-emoji" draggable animated cell-height="32" cell-width="32" cell-margin="0"
-                              col-count="15" row-count="15">
-                        <dom-repeat items="[[emojis]]" as="emoji">
-                            <template>
-                                <span col$="[[randomPosition()]]" row$="[[randomPosition()]]" height="1" width="1">[[emoji]]</span>
-                            </template>
-                        </dom-repeat>
-                        <div placeholder></div>
-                    </the-grid>
-                </template>
-            </dom-bind>
+                <dom-bind id="binding-emoji">
+                    <template>
+                        <the-grid id="grid-emoji" draggable animated cell-height="32" cell-width="32" cell-margin="0"
+                            col-count="15" row-count="15">
+                            <dom-repeat items="[[emojis]]" as="emoji">
+                                <template>
+                                    <span col$="[[randomPosition()]]" row$="[[randomPosition()]]" height="1" width="1">[[emoji]]</span>
+                                </template>
+                            </dom-repeat>
+                            <div placeholder></div>
+                        </the-grid>
+                    </template>
+                </dom-bind>
 
-            <script>
-                let binding = document.querySelector('#binding-emoji');
-
-                // Emoji range from 😁 (0x1F601) to 😶 (0x1F637)
-                binding.emojis = Array.from({length: (0x1F637 - 0x1F601)}, (v, k) => String.fromCodePoint(k + 0x1F601));
-
-                binding.randomPosition = function () {
-                    return Math.round(Math.random() * 15);
-                }
-            </script>
-        </template>
-    </demo-snippet>
-</div>
+                <script>
+                    let binding = document.querySelector('#binding-emoji');
+                    // Emoji range from 😁 (0x1F601) to 😶 (0x1F637)
+                    binding.emojis = Array.from({ length: (0x1F637 - 0x1F601) }, (v, k) => String.fromCodePoint(k + 0x1F601));
+                    binding.randomPosition = function () {
+                        return Math.round(Math.random() * 15);
+                    }
+                </script>
+            </template>
+        </demo-snippet>
+    </div>
 
 </body>
+
 </html>

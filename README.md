@@ -4,7 +4,7 @@
 
 > A digital frontier...
 
-Grid layout custom element based on **ES2015** and **Polymer 2.0**.
+Grid layout custom element based on **ES6** and **Polymer 3.0**.
 
 Features:
 
@@ -21,8 +21,8 @@ Example:
 ```
 <custom-element-demo>
   <template>
-    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="the-grid.html">
+    <script src="@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script type="module" src="@v-pusher/the-grid/the-grid.js">
     <style>
         the-grid > div {
             background: #ff4d43;
@@ -131,13 +131,20 @@ Example:
 
 ## Installation
 
-First, make sure you have [Bower](https://bower.io/) and the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed.
+First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed.
 
 Then,
 
 ```
-bower install
-polymer serve -o
+npm install
+npm run serve
+```
+
+## Tests
+
+```
+npm install -g web-component-tester wct-istanbub wct-local
+npm run test
 ```
 
 ## Usage
