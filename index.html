@@ -1,17 +1,136 @@
 <!doctype html>
-
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    
+    <title>proba</title>
+    <meta name="description" content="trying reading, searching and putting">
+    
+    <!-- See https://goo.gl/OOhYW5 -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script>
+        window.Polymer = {
+          dom: 'shadow',
+          lazyRegister: true
+        }
+      </script>
+    <link rel="import" href="/bower_components/the-grid/the-gridfor1.html">
 
-    <title>the-grid</title>
-
-    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
-
-    <link rel="import" href="../iron-component-page/iron-component-page.html">
 </head>
 <body>
-    <iron-component-page></iron-component-page>
+    <the-grid draggable resizable animated col-count="6" row-count="4" cell-margin="10">
+        <div class="tile" col="0" row="0" height="1" width="4">
+            <span resize="right">│</span>
+        </div>
+        <div class="tile" col="0" row="1" height="3" width="1">
+            <span resize="top">─</span>
+        </div>
+    
+        <div class="tile" col="4" row="3" height="1" width="1">
+            <span resize="top-right">┐</span>
+        </div>
+    
+        <div class="tile" col="4" row="0" height="2" width="2">
+            <span resize="bottom-left">└</span>
+        </div>
+        <div class="tile" col="2" row="2" height="2" width="2">
+            <span resize="left">│</span>
+            <span resize="right">│</span>
+            <span resize="top">─</span>
+            <span resize="bottom">─</span>
+            <span resize="top-right">┐</span>
+            <span resize="top-left">┌</span>
+            <span resize="bottom-right">┘</span>
+            <span resize="bottom-left">└</span>
+        </div>
+        <div placeholder></div>
+    </the-grid>
+
+    <style>
+        the-grid .tile {
+            background: red;
+            opacity: 0.8;
+            color: white;
+            cursor: move;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        the-grid [placeholder] {
+            background: #afafaf;
+        }
+
+        the-grid .tile > span:not([resize]) {
+            flex: 1;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        the-grid [resize] {
+            position: absolute;
+        }
+
+        the-grid [resize="bottom-right"] {
+            bottom: 0;
+            right: 0;
+            cursor: nwse-resize;
+        }
+
+        the-grid [resize="bottom-left"] {
+            bottom: 0;
+            left: 0;
+            cursor: nesw-resize;
+        }
+
+        the-grid [resize="top-right"] {
+            top: 0;
+            right: 0;
+            cursor: nesw-resize;
+        }
+
+        the-grid [resize="top-left"] {
+            top: 0;
+            left: 0;
+            cursor: nwse-resize;
+        }
+
+        the-grid [resize="left"] {
+            top: 50%;
+            left: 0;
+            cursor: ew-resize;
+            margin-top: -10px;
+        }
+
+        the-grid [resize="top"] {
+            top: 0%;
+            width: 100%;
+            text-align: center;
+            cursor: ns-resize;
+        }
+
+        the-grid [resize="right"] {
+            top: 50%;
+            right: 0;
+            cursor: ew-resize;
+            margin-top: -10px;
+        }
+
+        the-grid [resize="bottom"] {
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            cursor: ns-resize;
+        }
+
+        dom-repeat {
+            display: none;
+        }
+    </style>
 </body>
 </html>
